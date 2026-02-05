@@ -1,46 +1,46 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import { Button } from "@/components/ui/Button";
 
 export default function HomePage() {
   return (
     <>
       <Navbar />
 
-      <header className="relative w-full h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <img
-            alt="Abstract Background"
-            className="w-full h-full object-cover blur-2xl scale-110 opacity-20 dark:opacity-30 mix-blend-multiply dark:mix-blend-overlay grayscale"
-            src="/hero.jpg"
+      <header className="relative isolate flex min-h-screen items-center justify-center overflow-hidden bg-white px-6 py-20 text-text-default">
+        {/* Background image layer */}
+        <div className="pointer-events-none absolute inset-0 -z-20">
+          <Image
+            src="/jj.jpg"
+            alt=""
+            fill
+            priority
+            className="h-full w-full object-cover blur-xl opacity-45 scale-105"
+            aria-hidden
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-white/5 to-background-light dark:from-background-dark/30 dark:via-background-dark/60 dark:to-background-dark" />
         </div>
-        <div className="relative z-10 flex flex-col items-center justify-center text-center px-4 -mt-[60px]">
-          <div className="mb-8 transform hover:scale-105 transition-transform duration-700">
-            <img
-              alt="Hero Visual"
-              className="w-64 md:w-96 mix-blend-multiply dark:mix-blend-normal"
-              src="/jj.jpg"
-            />
-          </div>
-          <h1 className="font-display text-4xl md:text-6xl font-medium text-text-light dark:text-white mb-4 tracking-tight">
-            Redefine Your <span className="text-primary italic">Presence</span>
+
+        {/* Veil / soft overlay layer */}
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-white/92 via-white/85 to-white/72" />
+
+        {/* Content layer */}
+        <div className="relative mx-auto flex w-full max-w-6xl flex-col items-center gap-6 text-center">
+          <span className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/70">Fit In Atelier</span>
+          <h1 className="font-[playfair] text-4xl sm:text-5xl md:text-6xl tracking-tight text-text-default">
+            Quiet Luxury, Defined
           </h1>
-          <p className="font-body text-sm md:text-base text-gray-600 dark:text-gray-400 max-w-md mb-10 leading-relaxed luxury-text-spacing">
-            ELEGANCE IS NOT STANDING OUT, BUT BEING REMEMBERED. DISCOVER THE NEW COLLECTION.
+          <p className="max-w-2xl text-base text-text-muted md:text-lg">
+            Tailored silhouettes, sculpted textures, and seasonless essentials designed for the understated.
           </p>
-          <Link
-            className="group relative inline-flex items-center justify-center px-8 py-3 overflow-hidden font-display font-medium tracking-tighter text-white bg-primary rounded-sm transition-all duration-300 hover:bg-primary-hover hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-background-dark"
-            href="#shop"
-          >
-            <span className="absolute w-0 h-0 transition-all duration-500 ease-out bg-white rounded-full group-hover:w-56 group-hover:h-56 opacity-10" />
-            <span className="relative luxury-text-spacing text-sm">EXPLORE COLLECTION</span>
-          </Link>
-        </div>
-        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <span className="material-icons-outlined text-primary text-3xl">keyboard_arrow_down</span>
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <Button size="lg">Explore Collection</Button>
+            <Link href="#shop" className="inline-flex">
+              <Button variant="outline" size="lg">View Lookbook</Button>
+            </Link>
+          </div>
         </div>
       </header>
 

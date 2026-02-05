@@ -31,6 +31,11 @@ const config: Config = {
         "street-grey": "#262626",
         "street-red": "#dc2626",
       },
+      borderRadius: {
+        lg: "14px",
+        xl: "18px",
+        "2xl": "24px",
+      },
       fontFamily: {
         display: ["var(--font-display)", "Playfair Display", "serif"],
         body: ["var(--font-body)", "Montserrat", "sans-serif"],
@@ -39,6 +44,8 @@ const config: Config = {
       },
       boxShadow: {
         storefront: "0 25px 50px -12px rgba(0,0,0,0.65)",
+        luxury: "0 20px 60px -24px rgba(0,0,0,0.22)",
+        subtle: "0 10px 30px -18px rgba(0,0,0,0.18)",
       },
     },
   },
