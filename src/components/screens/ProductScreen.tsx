@@ -1,0 +1,117 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+import { MobileShell } from "@/components/layout/MobileShell";
+import { BottomNav } from "@/components/ui/BottomNav";
+import { ProductGallery } from "@/components/ui/ProductGallery";
+import { RatingBadge } from "@/components/ui/RatingBadge";
+import { SizeSelector } from "@/components/ui/SizeSelector";
+import { StockIndicator } from "@/components/ui/StockIndicator";
+import { TopAppBar } from "@/components/ui/TopAppBar";
+import { ProductCard } from "@/components/ui/ProductCard";
+import { useCart } from "@/components/providers/CartProvider";
+import type { Product } from "@/types";
+
+interface ProductScreenProps {
+  product: Product;
+  related: Product[];
+}
+
+export function ProductScreen({ product, related }: ProductScreenProps) {
+  const router = useRouter();
+  const { addToCart, count } = useCart();
+  const [size, setSize] = useState<"S" | "M" | "L" | "XL" | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleAddToCart = () => {
+    if (!size) {
+      setError("Select a size");
+      return;
+    }
+    setError(null);
+    addToCart(product, size, 1);
+    router.push("/cart");
+  };
+
+  const heroImages = product.images.length > 0 ? product.images : [
+    "https://lh3.googleusercontent.com/aida-public/AB6AXuCFdjqwkVoyEJpSVs8rfa2Egxr8TPkPO8iU7Ls4PcNpfeLys2oDKqKZvBoEVYDb01wQMq-Crf-H4Z-J8OL0ndV283JlrTL2eqLDifEJOqtCT9MlGLWY-v7U8N-lZRprRFuDFWZ0Dm4yr0wOLqE3obpILAX2A0HYZn-Tr9pgSZdEkWqvGYRCmQg4M6T3-d7mvlGAFZvwo-I6GNeXxZmHR-nQaJvTXhnWDywq729vsTbvTbW5JyO_Y7KfTKUvl00W41-_EaW9Kh5uKRaf",
+  ];
+
+  return (
+    <MobileShell>
+      <TopAppBar cartCount={count} onCartClick={() => router.push("/cart")} />
+      <main className="flex-1 overflow-y-auto px-4 pb-24 lg:px-10 lg:pb-20">
+        <div className="py-6">
+          <div className="flex flex-col gap-10 lg:grid lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] lg:items-start lg:gap-16">
+            <ProductGallery images={heroImages} />
+            <div className="flex flex-col gap-4 rounded-none lg:sticky lg:top-24 lg:rounded-3xl lg:border lg:border-white/10 lg:bg-neutral-900/70 lg:p-10 lg:backdrop-blur-xl">
+              <div className="flex items-center gap-2">
+              {product.badge ? (
+                <span className="rounded-sm border border-street-red px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-street-red">
+                  {product.badge}
+                </span>
+              ) : null}
+              <span className="text-xs font-medium uppercase tracking-widest text-neutral-500">
+                {product.category}
+              </span>
+            </div>
+              <h1 className="font-display text-3xl font-black uppercase italic tracking-tight text-white lg:text-4xl">
+                {product.name}
+              </h1>
+              <RatingBadge rating={product.ratingAvg} reviews={product.reviewsCount} />
+              <div className="flex items-center gap-3">
+                <p className="text-2xl font-bold text-white lg:text-3xl">${product.price.toFixed(2)}</p>
+                {product.compareAt ? (
+                  <p className="text-sm font-medium text-neutral-500 line-through lg:text-base">
+                    ${product.compareAt.toFixed(2)}
+                  </p>
+                ) : null}
+              </div>
+              <p className="text-sm text-neutral-300 lg:text-base">{product.description}</p>
+              <StockIndicator stock={product.stock} />
+              <div className="mt-4 flex flex-col gap-3">
+                <div className="text-xs font-bold uppercase tracking-widest text-neutral-400">
+                  Select Size
+                </div>
+                <SizeSelector
+                  value={size}
+                  onChange={(value) => {
+                    setError(null);
+                    setSize(value);
+                  }}
+                />
+                {error ? (
+                  <p className="text-xs font-semibold uppercase tracking-widest text-red-500">
+                    {error}
+                  </p>
+                ) : null}
+              </div>
+              <button
+                type="button"
+                onClick={handleAddToCart}
+                className="mt-4 w-full rounded-sm bg-white py-3 text-sm font-bold uppercase tracking-widest text-black transition-colors hover:bg-neutral-200 lg:rounded-full lg:py-3.5 lg:text-base"
+                disabled={product.stock === 0}
+              >
+                {product.stock === 0 ? "Sold Out" : "Add to Cart"}
+              </button>
+            </div>
+          </div>
+        </div>
+        <section className="pb-12 pt-10 lg:pb-4">
+          <h2 className="mb-4 font-display text-2xl font-black uppercase italic tracking-tighter text-white lg:text-3xl">
+            You may also like
+          </h2>
+          <div className="flex gap-4 overflow-x-auto pb-2 no-scrollbar snap-x snap-mandatory lg:grid lg:grid-cols-4 lg:gap-6 lg:overflow-visible lg:pb-0 lg:snap-none">
+            {related.map((item) => (
+              <ProductCard key={item.id} product={item} />
+            ))}
+          </div>
+        </section>
+      </main>
+      <BottomNav />
+      <div className="h-10 bg-background-dark lg:hidden" />
+    </MobileShell>
+  );
+}

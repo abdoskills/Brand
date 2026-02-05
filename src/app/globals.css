@@ -1,0 +1,37 @@
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  --font-display: "Plus Jakarta Sans", sans-serif;
+  --font-body: "Noto Sans", sans-serif;
+  --font-icons: "Material Symbols Outlined";
+}
+
+body {
+  @apply bg-background-dark text-white font-body antialiased selection:bg-street-red selection:text-white;
+  min-height: max(884px, 100dvh);
+}
+
+main {
+  @apply flex w-full justify-center;
+}
+
+.material-symbols-outlined {
+  font-family: var(--font-icons);
+  font-weight: normal;
+  font-style: normal;
+  font-size: inherit;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-font-smoothing: antialiased;
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+}
