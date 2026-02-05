@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { comparePassword, createAuthToken, setAuthCookie } from "@/lib/auth";
-import { connectMongo } from "@/lib/db";
-import { User } from "@/models/User";
+import { prisma } from "@/lib/db";
 
 export async function POST(request: Request) {
   try {
@@ -12,46 +11,28 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "Email/phone and password required" }, { status: 400 });
     }
 
-    if (process.env.MONGODB_URI) {
-      await connectMongo();
-      const user = await User.findOne({ emailOrPhone: emailOrPhone.toLowerCase() });
+    const normalized = emailOrPhone.toLowerCase();
 
-      if (!user) {
-        return NextResponse.json({ message: "Invalid credentials" }, { status: 401 });
-      }
-
-      const valid = await comparePassword(password, user.passwordHash);
-      if (!valid) {
-        return NextResponse.json({ message: "Invalid credentials" }, { status: 401 });
-      }
-
-      const token = createAuthToken({ sub: user._id.toString(), role: user.role });
-      await setAuthCookie(token);
-
-      return NextResponse.json({
-        token,
-        user: {
-          id: user._id.toString(),
-          name: user.name,
-          emailOrPhone: user.emailOrPhone,
-          role: user.role,
-        },
-      });
+    const user = await prisma.user.findUnique({ where: { emailOrPhone: normalized } });
+    if (!user) {
+      return NextResponse.json({ message: "Invalid credentials" }, { status: 401 });
     }
 
-    const normalized = emailOrPhone.toLowerCase();
-    const isAdmin = normalized === "admin@example.com";
-    const fallbackId = `user_${normalized.replace(/[^a-z0-9]/g, "") || "guest"}`;
-    const token = createAuthToken({ sub: fallbackId, role: isAdmin ? "admin" : "user" });
+    const valid = await comparePassword(password, user.passwordHash);
+    if (!valid) {
+      return NextResponse.json({ message: "Invalid credentials" }, { status: 401 });
+    }
+
+    const token = createAuthToken({ sub: user.id, role: user.role as "user" | "admin" });
     await setAuthCookie(token);
 
     return NextResponse.json({
       token,
       user: {
-        id: fallbackId,
-        name: normalized.split("@")[0] || "Guest",
-        emailOrPhone: normalized,
-        role: isAdmin ? "admin" : "user",
+        id: user.id,
+        name: user.name,
+        emailOrPhone: user.emailOrPhone,
+        role: user.role,
       },
     });
   } catch (error) {

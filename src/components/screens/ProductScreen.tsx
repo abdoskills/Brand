@@ -98,6 +98,20 @@ export function ProductScreen({ product, related }: ProductScreenProps) {
               </button>
             </div>
           </div>
+          <div className="mt-10 grid gap-4 rounded-2xl border border-white/10 bg-neutral-900/70 p-6 lg:grid-cols-3 lg:gap-6 lg:p-8">
+            <div className="rounded-xl border border-white/10 bg-black/30 p-4 lg:p-5">
+              <h3 className="font-display text-lg font-semibold text-white">Delivery & Returns</h3>
+              <p className="mt-2 text-sm text-neutral-300">Free standard delivery over $150. Express options available. Returns accepted within 30 days in original condition.</p>
+            </div>
+            <div className="rounded-xl border border-white/10 bg-black/30 p-4 lg:p-5">
+              <h3 className="font-display text-lg font-semibold text-white">Payment & Security</h3>
+              <p className="mt-2 text-sm text-neutral-300">Secure checkout with major cards and wallets. Payment is encrypted end-to-end for your protection.</p>
+            </div>
+            <div className="rounded-xl border border-white/10 bg-black/30 p-4 lg:p-5">
+              <h3 className="font-display text-lg font-semibold text-white">Fit & Care</h3>
+              <p className="mt-2 text-sm text-neutral-300">True to size with a tailored drape. Machine wash cold, lay flat to dry to preserve shape and fabric integrity.</p>
+            </div>
+          </div>
         </div>
         <section className="pb-12 pt-10 lg:pb-4">
           <h2 className="mb-4 font-display text-2xl font-black uppercase italic tracking-tighter text-white lg:text-3xl">

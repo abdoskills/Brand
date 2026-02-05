@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { requireAdmin } from "@/lib/auth";
-import { connectMongo } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { serializeOrder } from "@/lib/serializers";
-import { Order } from "@/models/Order";
 
 interface Params {
   params: Promise<{ id: string }>;
@@ -21,21 +20,23 @@ export async function PATCH(request: NextRequest, { params }: Params) {
       return NextResponse.json({ message: "Invalid status" }, { status: 400 });
     }
 
-    await connectMongo();
-    const order = await Order.findByIdAndUpdate(
-      id,
-      { status },
-      { new: true, lean: true }
-    );
+    const order = await prisma.order.update({
+      where: { id },
+      data: { status },
+      include: { items: true },
+    });
 
     if (!order) {
       return NextResponse.json({ message: "Order not found" }, { status: 404 });
     }
 
     return NextResponse.json({ order: serializeOrder(order) });
-  } catch (error) {
+  } catch (error: any) {
     if (error instanceof Response) {
       throw error;
+    }
+    if (error?.code === "P2025") {
+      return NextResponse.json({ message: "Order not found" }, { status: 404 });
     }
     console.error("Order status PATCH error", error);
     return NextResponse.json({ message: "Internal server error" }, { status: 500 });

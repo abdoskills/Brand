@@ -1,0 +1,99 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum OrderStatus {
+  pending
+  processing
+  shipped
+  cancelled
+}
+
+enum SizeOption {
+  S
+  M
+  L
+  XL
+}
+
+enum ProductCategory {
+  accessories
+  bottoms
+  outerwear
+  headwear
+  essentials
+  hoodies
+  tees
+  pants
+  jackets
+}
+
+enum ProductBadge {
+  New
+  Hot
+  Limited
+  Trending
+  Best_Seller
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  emailOrPhone String   @unique
+  passwordHash String
+  role         String   @default("user")
+  orders       Order[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Product {
+  id           String           @id @default(cuid())
+  name         String
+  description  String
+  price        Decimal          @db.Decimal(10, 2)
+  compareAt    Decimal?         @db.Decimal(10, 2)
+  images       String[]
+  category     ProductCategory
+  badge        ProductBadge?
+  ratingAvg    Float            @default(0)
+  reviewsCount Int              @default(0)
+  stock        Int              @default(0)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  items        OrderItem[]
+}
+
+model Order {
+  id              String       @id @default(cuid())
+  user            User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId          String?
+  items           OrderItem[]
+  shippingName    String
+  shippingPhone   String
+  shippingAddress String
+  shippingCity    String
+  subtotal        Decimal      @db.Decimal(10, 2)
+  total           Decimal      @db.Decimal(10, 2)
+  status          OrderStatus  @default(pending)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+}
+
+model OrderItem {
+  id        String      @id @default(cuid())
+  order     Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId   String
+  product   Product     @relation(fields: [productId], references: [id], onDelete: Restrict)
+  productId String
+  name      String
+  image     String?
+  qty       Int
+  unitPrice Decimal     @db.Decimal(10, 2)
+  size      SizeOption
+}

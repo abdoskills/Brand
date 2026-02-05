@@ -3,9 +3,8 @@ import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 
-import { connectMongo } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { getJwtSecret } from "@/lib/env";
-import { User } from "@/models/User";
 
 export interface AuthTokenPayload {
   sub: string;
@@ -72,25 +71,15 @@ export async function getUserFromRequest(request: NextRequest) {
     }
     const payload = verifyAuthToken(token);
 
-    if (!process.env.MONGODB_URI) {
-      return {
-        id: payload.sub,
-        name: "Test User",
-        emailOrPhone: "test@example.com",
-        role: payload.role,
-      } satisfies AuthUser;
-    }
-
-    await connectMongo();
-    const user = await User.findById(payload.sub).lean();
+    const user = await prisma.user.findUnique({ where: { id: payload.sub } });
     if (!user) {
       return null;
     }
     return {
-      id: user._id.toString(),
+      id: user.id,
       name: user.name,
       emailOrPhone: user.emailOrPhone,
-      role: user.role,
+      role: user.role as AuthUser["role"],
     } satisfies AuthUser;
   } catch {
     return null;

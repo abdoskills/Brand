@@ -2,48 +2,47 @@ import "dotenv/config";
 
 import bcrypt from "bcryptjs";
 
-import { connectMongo } from "../src/lib/db";
+import { prisma } from "../src/lib/db";
 import { dummyProducts } from "../src/lib/dummyData";
-import { Product } from "../src/models/Product";
-import { User } from "../src/models/User";
 
 async function main() {
-  await connectMongo();
-
   const adminIdentifier = process.env.SEED_ADMIN ?? "admin@streetwear.io";
   const adminPassword = process.env.SEED_ADMIN_PASSWORD ?? "admin123";
+  const passwordHash = await bcrypt.hash(adminPassword, 10);
 
-  const existingAdmin = await User.findOne({ emailOrPhone: adminIdentifier });
-  if (!existingAdmin) {
-    const passwordHash = await bcrypt.hash(adminPassword, 10);
-    await User.create({
+  await prisma.user.upsert({
+    where: { emailOrPhone: adminIdentifier.toLowerCase() },
+    update: {},
+    create: {
       name: "Streetwear Admin",
-      emailOrPhone: adminIdentifier,
+      emailOrPhone: adminIdentifier.toLowerCase(),
       passwordHash,
       role: "admin",
-    });
-    console.log(`Created admin account ${adminIdentifier}`);
-  } else {
-    console.log(`Admin account ${adminIdentifier} already exists`);
-  }
+    },
+  });
+  console.log(`Ensured admin account ${adminIdentifier}`);
 
-  const productCount = await Product.countDocuments();
-  if (productCount === 0) {
-    await Product.insertMany(
-      dummyProducts.map((product) => {
-        const { id: _unusedId, createdAt: _unusedCreatedAt, ...rest } = product;
-        void _unusedId;
-        void _unusedCreatedAt;
-        return {
-          ...rest,
-          compareAt: rest.compareAt ?? undefined,
-        };
-      })
-    );
-    console.log(`Inserted ${dummyProducts.length} starter products`);
-  } else {
-    console.log("Products already present, skipping seed");
+  for (const product of dummyProducts) {
+    await prisma.product.upsert({
+      where: { id: product.id },
+      update: {},
+      create: {
+        id: product.id,
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        compareAt: product.compareAt,
+        images: product.images,
+        category: product.category as any,
+        badge: product.badge ? (product.badge === "Best Seller" ? "Best_Seller" : product.badge) as any : null,
+        ratingAvg: product.ratingAvg,
+        reviewsCount: product.reviewsCount,
+        stock: product.stock,
+        createdAt: new Date(product.createdAt),
+      },
+    });
   }
+  console.log(`Upserted ${dummyProducts.length} starter products`);
 }
 
 main()
@@ -54,4 +53,7 @@ main()
   .catch((error) => {
     console.error("Seed failed", error);
     process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
   });

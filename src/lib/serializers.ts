@@ -1,10 +1,16 @@
-import type { IOrder } from "@/models/Order";
-import type { IProduct } from "@/models/Product";
-import type { IUser } from "@/models/User";
+import type { Order as PrismaOrder, OrderItem as PrismaOrderItem, Product as PrismaProduct, User as PrismaUser } from "@prisma/client";
 
-export function serializeUser(user: IUser & { _id: any }) {
+import type { Order as ApiOrder, Product as ApiProduct } from "@/types";
+
+function normalizeBadge(badge: PrismaProduct["badge"]): ApiProduct["badge"] {
+  if (!badge) return null;
+  if (badge === "Best_Seller") return "Best Seller";
+  return badge as ApiProduct["badge"];
+}
+
+export function serializeUser(user: PrismaUser) {
   return {
-    id: user._id.toString(),
+    id: user.id,
     name: user.name,
     emailOrPhone: user.emailOrPhone,
     role: user.role,
@@ -12,33 +18,45 @@ export function serializeUser(user: IUser & { _id: any }) {
   };
 }
 
-export function serializeProduct(product: IProduct & { _id: any }) {
+export function serializeProduct(product: PrismaProduct): ApiProduct {
   return {
-    id: product._id.toString(),
+    id: product.id,
     name: product.name,
     description: product.description,
-    price: product.price,
-    compareAt: product.compareAt ?? null,
+    price: Number(product.price),
+    compareAt: product.compareAt ? Number(product.compareAt) : null,
     images: product.images,
     category: product.category,
-    badge: product.badge ?? null,
-    ratingAvg: product.ratingAvg,
+    badge: normalizeBadge(product.badge),
+    ratingAvg: product.ratingAvg ?? 0,
     reviewsCount: product.reviewsCount,
     stock: product.stock,
-    createdAt: product.createdAt,
+    createdAt: product.createdAt.toISOString(),
   };
 }
 
-export function serializeOrder(order: IOrder & { _id: any }) {
+export function serializeOrder(order: PrismaOrder & { items?: PrismaOrderItem[] }): ApiOrder {
   return {
-    id: order._id.toString(),
-    userId: order.userId,
-    items: order.items,
-    shipping: order.shipping,
-    subtotal: order.subtotal,
-    total: order.total,
-    status: order.status,
-    createdAt: order.createdAt,
-    updatedAt: order.updatedAt,
+    id: order.id,
+    userId: order.userId ?? "",
+    items: (order.items ?? []).map((item) => ({
+      productId: item.productId,
+      name: item.name,
+      image: item.image ?? undefined,
+      price: Number(item.unitPrice),
+      qty: item.qty,
+      size: item.size as ApiOrder["items"][number]["size"],
+    })),
+    shipping: {
+      name: order.shippingName,
+      phone: order.shippingPhone,
+      address: order.shippingAddress,
+      city: order.shippingCity,
+    },
+    subtotal: Number(order.subtotal),
+    total: Number(order.total),
+    status: order.status as ApiOrder["status"],
+    createdAt: order.createdAt.toISOString(),
+    updatedAt: order.updatedAt.toISOString(),
   };
 }

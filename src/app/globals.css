@@ -1,20 +1,19 @@
 @import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  color-scheme: dark;
-  --font-display: "Plus Jakarta Sans", sans-serif;
-  --font-body: "Noto Sans", sans-serif;
+  color-scheme: light;
+  --font-display: "Playfair Display", serif;
+  --font-body: "Montserrat", sans-serif;
   --font-icons: "Material Symbols Outlined";
 }
 
 body {
-  @apply bg-background-dark text-white font-body antialiased selection:bg-street-red selection:text-white;
-  min-height: max(884px, 100dvh);
+  @apply bg-background-light text-text-light font-body antialiased selection:bg-primary selection:text-white transition-colors duration-300 dark:bg-background-dark dark:text-text-dark;
+  min-height: 100dvh;
 }
 
 main {
@@ -34,4 +33,58 @@ main {
   justify-content: center;
   -webkit-font-smoothing: antialiased;
   font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.material-icons-outlined {
+  font-family: "Material Icons Outlined";
+  font-weight: normal;
+  font-style: normal;
+  font-size: inherit;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.luxury-text-spacing {
+  letter-spacing: 0.15em;
+}
+
+.glass-nav {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c7a76c;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #b08d55;
 }
