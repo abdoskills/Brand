@@ -1,91 +1,88 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/Button";
+import { NewArrivalsSection } from "@/components/home/NewArrivalsSection";
 
 export default function HomePage() {
+  const easing = [0.25, 0.1, 0.25, 1];
+
   return (
     <>
       <Navbar />
 
       <header className="relative isolate flex min-h-screen items-center justify-center overflow-hidden bg-white px-6 py-20 text-text-default">
         {/* Background image layer */}
-        <div className="pointer-events-none absolute inset-0 -z-20">
-          <Image
-            src="/jj.jpg"
-            alt=""
-            fill
-            priority
-            className="h-full w-full object-cover blur-xl opacity-45 scale-105"
-            aria-hidden
-          />
-        </div>
+        <motion.div
+          className="pointer-events-none absolute inset-0 -z-20"
+          initial={{ opacity: 0, y: 12, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 1.1, ease: easing }}
+        >
+          <motion.div
+            className="absolute inset-0"
+            animate={{ y: [0, -6, 0] }}
+            transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <Image
+              src="/jj.jpg"
+              alt=""
+              fill
+              priority
+              className="h-full w-full object-cover blur-lg opacity-45 scale-105"
+              aria-hidden
+            />
+          </motion.div>
+        </motion.div>
 
         {/* Veil / soft overlay layer */}
         <div className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-white/92 via-white/85 to-white/72" />
 
         {/* Content layer */}
-        <div className="relative mx-auto flex w-full max-w-6xl flex-col items-center gap-6 text-center">
-          <span className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/70">Fit In Atelier</span>
-          <h1 className="font-[playfair] text-4xl sm:text-5xl md:text-6xl tracking-tight text-text-default">
-            Quiet Luxury, Defined
-          </h1>
-          <p className="max-w-2xl text-base text-text-muted md:text-lg">
-            Tailored silhouettes, sculpted textures, and seasonless essentials designed for the understated.
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            <Button size="lg">Explore Collection</Button>
-            <Link href="#shop" className="inline-flex">
-              <Button variant="outline" size="lg">View Lookbook</Button>
+        <motion.div
+          className="relative mx-auto mt-6 flex w-full max-w-5xl flex-col items-center gap-6 text-center sm:mt-10 lg:mt-12"
+          initial="hidden"
+          animate="show"
+          variants={{
+            hidden: { opacity: 0 },
+            show: { opacity: 1, transition: { staggerChildren: 0.12 } },
+          }}
+        >
+          <motion.div
+            className="flex flex-col items-center gap-3"
+            variants={{
+              hidden: { opacity: 0, y: 10 },
+              show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: easing } },
+            }}
+          >
+            <span className="text-[11px] font-semibold uppercase tracking-[0.24em] text-primary/80">Fit In · New Drop</span>
+            <span className="h-px w-16 bg-[#C7A76C]/60" />
+          </motion.div>
+
+          <motion.div
+            className="flex flex-wrap items-center justify-center gap-4"
+            variants={{
+              hidden: { opacity: 0, y: 12 },
+              show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: easing, delay: 0.1 } },
+            }}
+          >
+            <Link href="/products" className="inline-flex">
+              <Button size="lg">Shop Now</Button>
             </Link>
-          </div>
-        </div>
+            <Link href="/collections" className="text-xs font-semibold uppercase tracking-[0.2em] text-text-default hover:text-primary">
+              View Collection
+            </Link>
+          </motion.div>
+        </motion.div>
       </header>
 
-      <main className="flex-grow w-full max-w-7xl mx-auto px-6 lg:px-12 pt-20 pb-20" id="shop">
-        <div className="flex flex-col items-center justify-center mb-16">
-          <span className="text-primary text-xs font-bold tracking-[0.2em] uppercase mb-2">Latest Drops</span>
-          <h2 className="font-display text-3xl md:text-4xl text-text-light dark:text-white mb-6">New Arrivals</h2>
-          <div className="w-16 h-[1px] bg-primary" />
-        </div>
-
-        <div className="flex justify-between items-center mb-10 border-b border-border-light dark:border-border-dark pb-4">
-          <div className="flex space-x-6 text-sm font-medium text-gray-500 dark:text-gray-400">
-            <button className="text-text-light dark:text-white border-b border-primary pb-0.5">All</button>
-            <button className="hover:text-primary transition-colors">Outerwear</button>
-            <button className="hover:text-primary transition-colors">Tops</button>
-            <button className="hover:text-primary transition-colors">Accessories</button>
-          </div>
-          <button className="flex items-center space-x-1 text-xs uppercase tracking-widest text-text-light dark:text-white hover:text-primary">
-            <span>Filter</span>
-            <span className="material-icons-outlined text-sm">filter_list</span>
-          </button>
-        </div>
-
-        <div className="min-h-[400px] w-full flex flex-col items-center justify-center border border-dashed border-border-light dark:border-border-dark rounded-lg bg-surface-light dark:bg-surface-dark/50 transition-colors duration-500">
-          <div className="w-20 h-20 rounded-full bg-background-light dark:bg-background-dark flex items-center justify-center mb-6 shadow-lg border border-border-light dark:border-border-dark">
-            <span className="material-icons-outlined text-4xl text-primary">inventory_2</span>
-          </div>
-          <h3 className="font-display text-2xl text-text-light dark:text-white mb-2">Our Atelier is Busy</h3>
-          <p className="font-body text-gray-500 dark:text-gray-400 text-sm mb-8 luxury-text-spacing text-center max-w-sm">
-            NO PRODUCTS YET. <br />BE THE FIRST TO KNOW WHEN THE COLLECTION DROPS.
-          </p>
-          <form className="flex w-full max-w-md border-b border-text-light dark:border-white/30 focus-within:border-primary transition-colors pb-1">
-            <input
-              className="flex-1 bg-transparent border-none text-text-light dark:text-white placeholder-gray-400 text-xs tracking-widest focus:ring-0 px-0 py-2"
-              placeholder="ENTER YOUR EMAIL"
-              type="email"
-            />
-            <button
-              className="text-xs font-bold uppercase tracking-widest text-text-light dark:text-white hover:text-primary transition-colors"
-              type="submit"
-            >
-              Notify Me
-            </button>
-          </form>
-        </div>
+      <main className="flex-grow w-full" id="shop">
+        <NewArrivalsSection />
       </main>
 
       <section className="w-full bg-surface-light dark:bg-surface-dark py-20 border-t border-border-light dark:border-border-dark">

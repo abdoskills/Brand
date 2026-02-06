@@ -8,7 +8,7 @@ interface Params {
   params: Promise<{ id: string }>;
 }
 
-const allowedStatuses = new Set(["pending", "processing", "shipped", "cancelled"]);
+const allowedStatuses = new Set(["preparing", "shipping", "shipped", "cancelled"]);
 
 export async function PATCH(request: NextRequest, { params }: Params) {
   try {
@@ -31,11 +31,11 @@ export async function PATCH(request: NextRequest, { params }: Params) {
     }
 
     return NextResponse.json({ order: serializeOrder(order) });
-  } catch (error: any) {
+  } catch (error: unknown) {
     if (error instanceof Response) {
       throw error;
     }
-    if (error?.code === "P2025") {
+    if (typeof error === "object" && error && "code" in error && (error as { code?: string }).code === "P2025") {
       return NextResponse.json({ message: "Order not found" }, { status: 404 });
     }
     console.error("Order status PATCH error", error);

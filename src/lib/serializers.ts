@@ -21,17 +21,25 @@ export function serializeUser(user: PrismaUser) {
 export function serializeProduct(product: PrismaProduct): ApiProduct {
   return {
     id: product.id,
+    slug: product.slug,
     name: product.name,
+    shortDescription: product.shortDescription ?? product.description,
     description: product.description,
     price: Number(product.price),
     compareAt: product.compareAt ? Number(product.compareAt) : null,
+    currency: product.currency,
     images: product.images,
     category: product.category,
     badge: normalizeBadge(product.badge),
     ratingAvg: product.ratingAvg ?? 0,
     reviewsCount: product.reviewsCount,
     stock: product.stock,
+    inStock: product.stock > 0,
+    features: product.features,
+    sizes: product.sizes,
     createdAt: product.createdAt.toISOString(),
+    materials: product.materials ?? undefined,
+    care: product.care ?? undefined,
   };
 }
 

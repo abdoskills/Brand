@@ -1,9 +1,12 @@
 export interface Product {
   id: string;
+  slug: string;
   name: string;
+  shortDescription: string;
   description: string;
   price: number;
   compareAt: number | null;
+  currency: string;
   images: string[];
   category:
     | "accessories"
@@ -14,12 +17,22 @@ export interface Product {
     | "hoodies"
     | "tees"
     | "pants"
-    | "jackets";
+    | "jackets"
+    | "tops";
   badge: "New" | "Hot" | "Limited" | "Trending" | "Best Seller" | null;
   ratingAvg: number;
   reviewsCount: number;
   stock: number;
+  inStock: boolean;
+  features: string[];
+  sizes: string[];
   createdAt: string;
+  isNew?: boolean;
+  brand?: string;
+  highlights?: string[];
+  sku?: string;
+  materials?: string | null;
+  care?: string | null;
 }
 
 export interface CartItem {
@@ -56,7 +69,7 @@ export interface Order {
   };
   subtotal: number;
   total: number;
-  status: "pending" | "processing" | "shipped" | "cancelled";
+  status: "preparing" | "shipping" | "shipped" | "cancelled";
   createdAt: string;
   updatedAt: string;
 }

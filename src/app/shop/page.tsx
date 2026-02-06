@@ -1,7 +1,5 @@
-import { ShopScreen } from "@/components/screens/ShopScreen";
-import { fetchProducts } from "@/lib/apiClient";
+import { redirect } from "next/navigation";
 
-export default async function ShopPage() {
-  const products = await fetchProducts();
-  return <ShopScreen products={products} />;
+export default function ShopPage() {
+  redirect("/collections");
 }

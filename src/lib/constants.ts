@@ -8,6 +8,7 @@ export const PRODUCT_CATEGORIES = [
   "tees",
   "pants",
   "jackets",
+  "tops",
 ] as const;
 
 export const PRODUCT_BADGES = [

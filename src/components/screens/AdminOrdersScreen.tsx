@@ -10,7 +10,7 @@ import { TopAppBar } from "@/components/ui/TopAppBar";
 import { useCart } from "@/components/providers/CartProvider";
 import type { Order } from "@/types";
 
-const statusOptions: Order["status"][] = ["pending", "processing", "shipped", "cancelled"];
+const statusOptions: Order["status"][] = ["preparing", "shipping", "shipped", "cancelled"];
 
 export function AdminOrdersScreen() {
   const { count } = useCart();

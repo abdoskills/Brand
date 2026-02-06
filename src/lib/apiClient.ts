@@ -1,4 +1,5 @@
 import { dummyProducts } from "@/lib/dummyData";
+import { getProductBySlug, mockProducts } from "@/lib/mockProducts";
 import type { Order, Product } from "@/types";
 
 function resolveBaseUrl() {
@@ -43,7 +44,7 @@ async function safeFetch<T>(path: string, init?: RequestInit): Promise<T | null>
 export async function fetchProducts(): Promise<Product[]> {
   const data = await safeFetch<{ products: Product[] }>("/api/products");
   if (!data || !Array.isArray(data.products) || data.products.length === 0) {
-    return dummyProducts;
+    return mockProducts;
   }
   return data.products;
 }
@@ -51,7 +52,8 @@ export async function fetchProducts(): Promise<Product[]> {
 export async function fetchProduct(id: string): Promise<Product | null> {
   const data = await safeFetch<{ product: Product }>(`/api/products/${id}`);
   if (!data) {
-    return dummyProducts.find((product) => product.id === id) ?? null;
+    const localProduct = getProductBySlug(id) ?? dummyProducts.find((product) => product.id === id);
+    return localProduct ?? null;
   }
   return data.product;
 }

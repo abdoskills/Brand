@@ -9,7 +9,8 @@ export type ProductCategory =
   | "hoodies"
   | "tees"
   | "pants"
-  | "jackets";
+  | "jackets"
+  | "tops";
 
 export type ProductBadge =
   | "New"
@@ -55,6 +56,7 @@ const productSchema = new Schema<IProduct>(
         "tees",
         "pants",
         "jackets",
+        "tops",
       ],
     },
     badge: {

@@ -4,6 +4,7 @@ import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { dummyProducts } from "@/lib/dummyData";
 import { serializeProduct } from "@/lib/serializers";
+import { slugify } from "@/lib/slug";
 
 export async function GET() {
   try {
@@ -22,18 +23,37 @@ export async function POST(request: NextRequest) {
   try {
     await requireAdmin(request);
     const data = await request.json();
+
+    const name = (data.name ?? "").trim();
+    const description = (data.description ?? "").trim();
+    const price = Number(data.price);
+
+    if (!name || !description || Number.isNaN(price)) {
+      return NextResponse.json({ message: "Name, description, and price are required" }, { status: 400 });
+    }
+
+    const slug = slugify(data.slug ?? name);
+    const compareAtValue = data.compareAt !== undefined && data.compareAt !== null ? Number(data.compareAt) : null;
+
     const product = await prisma.product.create({
       data: {
-        name: data.name,
-        description: data.description,
-        price: data.price,
-        compareAt: data.compareAt ?? null,
+        slug,
+        name,
+        shortDescription: data.shortDescription ?? description,
+        description,
+        features: Array.isArray(data.features) ? data.features : [],
+        materials: data.materials ?? null,
+        care: data.care ?? null,
+        price,
+        currency: data.currency ?? "USD",
+        compareAt: compareAtValue,
         images: Array.isArray(data.images) ? data.images : [],
         category: data.category,
         badge: data.badge ? (data.badge === "Best Seller" ? "Best_Seller" : data.badge) : null,
         ratingAvg: data.ratingAvg ?? 0,
         reviewsCount: data.reviewsCount ?? 0,
         stock: data.stock ?? 0,
+        sizes: Array.isArray(data.sizes) && data.sizes.length ? data.sizes : ["S", "M", "L", "XL"],
       },
     });
 

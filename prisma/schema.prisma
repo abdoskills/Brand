@@ -8,8 +8,8 @@ datasource db {
 }
 
 enum OrderStatus {
-  pending
-  processing
+  preparing
+  shipping
   shipped
   cancelled
 }
@@ -31,6 +31,7 @@ enum ProductCategory {
   tees
   pants
   jackets
+  tops
 }
 
 enum ProductBadge {
@@ -54,9 +55,15 @@ model User {
 
 model Product {
   id           String           @id @default(cuid())
+  slug         String           @unique
   name         String
-  description  String
+  shortDescription String?      @db.Text
+  description  String           @db.Text
+  features     String[]         @default([])
+  materials    String?          @db.Text
+  care         String?          @db.Text
   price        Decimal          @db.Decimal(10, 2)
+  currency     String           @default("USD")
   compareAt    Decimal?         @db.Decimal(10, 2)
   images       String[]
   category     ProductCategory
@@ -64,6 +71,7 @@ model Product {
   ratingAvg    Float            @default(0)
   reviewsCount Int              @default(0)
   stock        Int              @default(0)
+  sizes        String[]         @default([])
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
   items        OrderItem[]

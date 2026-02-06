@@ -4,23 +4,25 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function Navbar() {
-  const [isDark, setIsDark] = useState(true);
-
-  useEffect(() => {
+  const getInitialTheme = () => {
+    if (typeof window === "undefined") return true;
     const saved =
       localStorage.theme === "dark" ||
-      (!("theme" in localStorage) &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches);
-
+      (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches);
     document.documentElement.classList.toggle("dark", saved);
-    setIsDark(saved);
-  }, []);
+    return saved;
+  };
+
+  const [isDark, setIsDark] = useState<boolean>(getInitialTheme);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    document.documentElement.classList.toggle("dark", isDark);
+    localStorage.theme = isDark ? "dark" : "light";
+  }, [isDark]);
 
   const toggleTheme = () => {
-    const next = !document.documentElement.classList.contains("dark");
-    document.documentElement.classList.toggle("dark", next);
-    localStorage.theme = next ? "dark" : "light";
-    setIsDark(next);
+    setIsDark((prev) => !prev);
   };
 
   return (
@@ -52,12 +54,6 @@ export default function Navbar() {
                 href="/"
               >
                 Home
-              </Link>
-              <Link
-                className="luxury-text-spacing text-xs font-medium text-text-light dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors uppercase border-b-2 border-transparent hover:border-primary pb-1"
-                href="/shop"
-              >
-                Shop
               </Link>
               <Link
                 className="luxury-text-spacing text-xs font-medium text-text-light dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors uppercase border-b-2 border-transparent hover:border-primary pb-1"

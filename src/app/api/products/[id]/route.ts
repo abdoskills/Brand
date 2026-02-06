@@ -3,15 +3,17 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { serializeProduct } from "@/lib/serializers";
+import { slugify } from "@/lib/slug";
 
 interface Params {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }
 
 export async function GET(_request: NextRequest, { params }: Params) {
   try {
-    const { id } = await params;
-    const product = await prisma.product.findUnique({ where: { id } });
+    const { id } = params;
+    const normalized = slugify(id);
+    const product = await prisma.product.findFirst({ where: { OR: [{ id }, { slug: normalized }] } });
     if (!product) {
       return NextResponse.json({ message: "Product not found" }, { status: 404 });
     }
@@ -25,10 +27,15 @@ export async function GET(_request: NextRequest, { params }: Params) {
 export async function PUT(request: NextRequest, { params }: Params) {
   try {
     await requireAdmin(request);
-    const { id } = await params;
+    const { id } = params;
     const data = await request.json();
+    const normalized = slugify(id);
+    const target = await prisma.product.findFirst({ where: { OR: [{ id }, { slug: normalized }] } });
+    if (!target) {
+      return NextResponse.json({ message: "Product not found" }, { status: 404 });
+    }
     const product = await prisma.product.update({
-      where: { id },
+      where: { id: target.id },
       data: {
         name: data.name,
         description: data.description,
@@ -46,11 +53,11 @@ export async function PUT(request: NextRequest, { params }: Params) {
       return NextResponse.json({ message: "Product not found" }, { status: 404 });
     }
     return NextResponse.json({ product: serializeProduct(product) });
-  } catch (error: any) {
+  } catch (error: unknown) {
     if (error instanceof Response) {
       throw error;
     }
-    if (error?.code === "P2025") {
+    if (typeof error === "object" && error && "code" in error && (error as { code?: string }).code === "P2025") {
       return NextResponse.json({ message: "Product not found" }, { status: 404 });
     }
     console.error("Product PUT error", error);
@@ -61,17 +68,19 @@ export async function PUT(request: NextRequest, { params }: Params) {
 export async function DELETE(request: NextRequest, { params }: Params) {
   try {
     await requireAdmin(request);
-    const { id } = await params;
-    const product = await prisma.product.delete({ where: { id } });
-    if (!product) {
+    const { id } = params;
+    const normalized = slugify(id);
+    const target = await prisma.product.findFirst({ where: { OR: [{ id }, { slug: normalized }] } });
+    if (!target) {
       return NextResponse.json({ message: "Product not found" }, { status: 404 });
     }
+    await prisma.product.delete({ where: { id: target.id } });
     return NextResponse.json({ message: "Product deleted" });
-  } catch (error: any) {
+  } catch (error: unknown) {
     if (error instanceof Response) {
       throw error;
     }
-    if (error?.code === "P2025") {
+    if (typeof error === "object" && error && "code" in error && (error as { code?: string }).code === "P2025") {
       return NextResponse.json({ message: "Product not found" }, { status: 404 });
     }
     console.error("Product DELETE error", error);

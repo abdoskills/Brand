@@ -48,12 +48,12 @@ export default function Footer() {
             <h4 className="font-display text-sm font-semibold text-text-light dark:text-white mb-6">Shop</h4>
             <ul className="space-y-4 text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">
               <li>
-                <Link className="hover:text-primary transition-colors" href="/shop">
+                <Link className="hover:text-primary transition-colors" href="/collections">
                   New Arrivals
                 </Link>
               </li>
               <li>
-                <Link className="hover:text-primary transition-colors" href="/shop">
+                <Link className="hover:text-primary transition-colors" href="/collections">
                   Bestsellers
                 </Link>
               </li>
@@ -63,7 +63,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link className="hover:text-primary transition-colors" href="/shop">
+                <Link className="hover:text-primary transition-colors" href="/collections">
                   Sale
                 </Link>
               </li>

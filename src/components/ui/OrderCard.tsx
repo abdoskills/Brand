@@ -5,10 +5,17 @@ interface OrderCardProps {
 }
 
 const statusColors: Record<Order["status"], string> = {
-  pending: "text-amber-400",
-  processing: "text-blue-400",
-  shipped: "text-green-400",
+  preparing: "text-amber-400",
+  shipping: "text-blue-400",
+  shipped: "text-emerald-400",
   cancelled: "text-red-500",
+};
+
+const statusLabels: Record<Order["status"], string> = {
+  preparing: "Preparing",
+  shipping: "Shipping",
+  shipped: "Shipped",
+  cancelled: "Cancelled",
 };
 
 export function OrderCard({ order }: OrderCardProps) {
@@ -21,7 +28,7 @@ export function OrderCard({ order }: OrderCardProps) {
           <p className="text-sm font-bold text-white">#{order.id.slice(-6).toUpperCase()}</p>
         </div>
         <div className={`text-xs font-bold uppercase tracking-widest ${statusColors[order.status]}`}>
-          {order.status}
+          {statusLabels[order.status]}
         </div>
       </div>
       <div className="space-y-2 text-sm text-neutral-300">

@@ -24,10 +24,6 @@ async function test(name: string, fn: () => Promise<void>) {
   }
 }
 
-async function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 async function main() {
   console.log("🧪 Starting Backend API Tests...\n");
   let token: string | null = null;

@@ -53,8 +53,9 @@ export function CheckoutScreen() {
 
       clearCart();
       router.push("/orders/my");
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Something went wrong";
+      setError(message);
     } finally {
       setIsSubmitting(false);
     }

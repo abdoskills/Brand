@@ -9,7 +9,7 @@ export interface IOrderItem {
   image?: string;
 }
 
-export type OrderStatus = "pending" | "processing" | "shipped" | "cancelled";
+export type OrderStatus = "preparing" | "shipping" | "shipped" | "cancelled";
 
 export interface IOrder {
   userId: string;
@@ -55,8 +55,8 @@ const orderSchema = new Schema<IOrder>(
     total: { type: Number, required: true },
     status: {
       type: String,
-      enum: ["pending", "processing", "shipped", "cancelled"],
-      default: "pending",
+      enum: ["preparing", "shipping", "shipped", "cancelled"],
+      default: "preparing",
     },
   },
   { timestamps: true }

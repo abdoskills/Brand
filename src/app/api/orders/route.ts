@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
           shippingCity: shipping.city,
           subtotal,
           total,
-          status: "pending",
+          status: "preparing",
           items: {
             create: orderItems.map((item) => ({
               productId: item.productId,
