@@ -6,12 +6,12 @@ import { serializeProduct } from "@/lib/serializers";
 import { slugify } from "@/lib/slug";
 
 interface Params {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export async function GET(_request: NextRequest, { params }: Params) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const normalized = slugify(id);
     const product = await prisma.product.findFirst({ where: { OR: [{ id }, { slug: normalized }] } });
     if (!product) {
@@ -27,7 +27,7 @@ export async function GET(_request: NextRequest, { params }: Params) {
 export async function PUT(request: NextRequest, { params }: Params) {
   try {
     await requireAdmin(request);
-    const { id } = params;
+    const { id } = await params;
     const data = await request.json();
     const normalized = slugify(id);
     const target = await prisma.product.findFirst({ where: { OR: [{ id }, { slug: normalized }] } });
@@ -68,7 +68,7 @@ export async function PUT(request: NextRequest, { params }: Params) {
 export async function DELETE(request: NextRequest, { params }: Params) {
   try {
     await requireAdmin(request);
-    const { id } = params;
+    const { id } = await params;
     const normalized = slugify(id);
     const target = await prisma.product.findFirst({ where: { OR: [{ id }, { slug: normalized }] } });
     if (!target) {

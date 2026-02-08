@@ -1,8 +1,11 @@
 import Link from "next/link";
 
+import { enforceAdminAccess } from "@/lib/admin";
 import { NewProductForm } from "@/components/admin/NewProductForm";
+import { createProductAction } from "@/app/admin/products/new/actions";
 
-export default function AdminNewProductPage() {
+export default async function AdminNewProductPage() {
+  await enforceAdminAccess();
   return (
     <section className="space-y-8">
       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -18,7 +21,7 @@ export default function AdminNewProductPage() {
           Back to catalog
         </Link>
       </div>
-      <NewProductForm />
+      <NewProductForm onCreate={createProductAction} />
     </section>
   );
 }

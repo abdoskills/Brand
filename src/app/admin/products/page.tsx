@@ -1,12 +1,15 @@
 import Link from "next/link";
-import { listProductsWithFallback } from "@/lib/productService";
+
+import { enforceAdminAccess } from "@/lib/admin";
+import { getAllProducts } from "@/lib/db/products";
 
 const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminProductsPage() {
-  const products = await listProductsWithFallback();
+  await enforceAdminAccess();
+  const products = await getAllProducts();
 
   return (
     <section className="space-y-8">

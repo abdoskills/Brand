@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 
 interface TestOrderButtonProps {
-  slug: string;
+  onCreate: () => Promise<{ ok: boolean; message?: string }>;
 }
 
 type OrderState = {
@@ -11,7 +11,7 @@ type OrderState = {
   message: string;
 };
 
-export function TestOrderButton({ slug }: TestOrderButtonProps) {
+export function TestOrderButton({ onCreate }: TestOrderButtonProps) {
   const [state, setState] = useState<OrderState>({ status: "idle", message: "" });
   const [pending, startTransition] = useTransition();
 
@@ -19,14 +19,9 @@ export function TestOrderButton({ slug }: TestOrderButtonProps) {
     startTransition(async () => {
       setState({ status: "idle", message: "" });
       try {
-        const res = await fetch("/api/orders/test", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ slug }),
-        });
-        if (!res.ok) {
-          const body = await res.json().catch(() => ({}));
-          throw new Error(body.message ?? "Unable to place order");
+        const result = await onCreate();
+        if (!result.ok) {
+          throw new Error(result.message ?? "Unable to place order");
         }
         setState({ status: "success", message: "Order placed" });
       } catch (error) {

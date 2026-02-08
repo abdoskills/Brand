@@ -6,7 +6,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 import { useAuth } from "@/components/providers/AuthProvider";
 import Footer from "@/components/Footer";
-import Navbar from "@/components/Navbar";
 
 export function RegisterScreen() {
   const router = useRouter();
@@ -37,7 +36,6 @@ export function RegisterScreen() {
 
   return (
     <div className="min-h-screen bg-background-light text-text-light">
-      <Navbar />
       <main className="w-full max-w-6xl mx-auto px-6 pt-32 pb-24">
         <div className="grid gap-10 lg:grid-cols-[1.1fr,0.9fr] lg:items-center">
           <section className="relative overflow-hidden rounded-2xl border border-border-light bg-white p-8 lg:p-12 shadow-lg">

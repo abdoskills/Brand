@@ -2,16 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { dummyProducts } from "@/lib/dummyData";
 import { serializeProduct } from "@/lib/serializers";
 import { slugify } from "@/lib/slug";
 
 export async function GET() {
   try {
     const products = await prisma.product.findMany({ orderBy: { createdAt: "desc" } });
-    if (!products.length) {
-      return NextResponse.json({ products: dummyProducts });
-    }
     return NextResponse.json({ products: products.map(serializeProduct) });
   } catch (error) {
     console.error("Products GET error", error);

@@ -1,9 +1,12 @@
 "use client";
 
-import { ChangeEvent, FormEvent, useMemo, useState } from "react";
+import { ChangeEvent, FormEvent, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
+import { UploadDropzone } from "@/lib/uploadthing";
 import { slugify } from "@/lib/slug";
+import type { Product } from "@/types";
 
 const CATEGORY_OPTIONS = [
   "tops",
@@ -20,6 +23,8 @@ const CATEGORY_OPTIONS = [
 
 const BADGE_OPTIONS = ["New", "Hot", "Limited", "Trending", "Best Seller"] as const;
 
+const MAX_PRODUCT_IMAGES = 4;
+
 type BadgeOption = (typeof BADGE_OPTIONS)[number] | "";
 
 type FormState = {
@@ -27,15 +32,18 @@ type FormState = {
   slug: string;
   shortDescription: string;
   description: string;
-  category: string;
+  category: Product["category"];
   badge: BadgeOption;
   price: string;
   compareAt: string;
   stock: string;
   features: string;
-  images: string;
+  images: string[];
   materials: string;
   care: string;
+  isActive: boolean;
+  isFeatured: boolean;
+  collectionTag: string;
 };
 
 const INITIAL_STATE: FormState = {
@@ -49,16 +57,26 @@ const INITIAL_STATE: FormState = {
   compareAt: "",
   stock: "20",
   features: "Hand-cut panels\nOrganic cotton",
-  images: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab",
+  images: [],
   materials: "Italian brushed cotton",
   care: "Dry clean recommended",
+  isActive: true,
+  isFeatured: false,
+  collectionTag: "",
 };
 
-export function NewProductForm() {
+type CreateProductPayload = Omit<Product, "id" | "createdAt" | "inStock"> & { id?: string };
+
+interface NewProductFormProps {
+  onCreate: (payload: CreateProductPayload) => Promise<{ ok: boolean; message?: string }>;
+}
+
+export function NewProductForm({ onCreate }: NewProductFormProps) {
   const router = useRouter();
   const [formValues, setFormValues] = useState<FormState>(INITIAL_STATE);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   const resolvedSlug = useMemo(() => {
     return slugify(formValues.slug || formValues.name || "signature-piece");
@@ -91,8 +109,13 @@ export function NewProductForm() {
       price: Number(formValues.price),
       compareAt: formValues.compareAt ? Number(formValues.compareAt) : null,
       stock: Number(formValues.stock || 0),
+      ratingAvg: 0,
+      reviewsCount: 0,
+      isActive: formValues.isActive,
+      isFeatured: formValues.isFeatured,
+      collectionTag: formValues.collectionTag.trim() || null,
       features: parseList(formValues.features),
-      images: parseList(formValues.images),
+      images: formValues.images,
       materials: formValues.materials.trim() || null,
       care: formValues.care.trim() || null,
       currency: "USD",
@@ -105,27 +128,28 @@ export function NewProductForm() {
       return;
     }
 
-    try {
-      const response = await fetch("/api/products", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      if (!response.ok) {
-        const message = await response.json().catch(() => ({ message: "Failed to create product" }));
-        setError(message.message ?? "Failed to create product");
-        setIsSubmitting(false);
-        return;
-      }
-
-      router.push("/admin/products");
-      router.refresh();
-    } catch (submissionError) {
-      console.error(submissionError);
-      setError("Unexpected error while saving product.");
+    if (payload.images.length === 0) {
+      setError("At least one product image is required.");
       setIsSubmitting(false);
+      return;
     }
+
+    startTransition(async () => {
+      try {
+        const result = await onCreate(payload);
+        if (!result.ok) {
+          setError(result.message ?? "Failed to create product");
+          setIsSubmitting(false);
+          return;
+        }
+        router.push("/admin/products");
+        router.refresh();
+      } catch (submissionError) {
+        console.error(submissionError);
+        setError("Unexpected error while saving product.");
+        setIsSubmitting(false);
+      }
+    });
   }
 
   return (
@@ -191,6 +215,30 @@ export function NewProductForm() {
         </div>
         <div className="grid gap-5 md:grid-cols-2">
           <label className="text-sm font-medium text-neutral-700">
+            Visibility
+            <select
+              name="isActive"
+              value={formValues.isActive ? "true" : "false"}
+              onChange={(event) => setFormValues((prev) => ({ ...prev, isActive: event.target.value === "true" }))}
+              className="mt-1 w-full rounded-2xl border border-[#f3ead5] bg-[#fffdf7] px-4 py-3 text-base text-neutral-900 focus:border-[#c9a646] focus:outline-none"
+            >
+              <option value="true">Active</option>
+              <option value="false">Hidden</option>
+            </select>
+          </label>
+          <label className="text-sm font-medium text-neutral-700">
+            Featured drop
+            <select
+              name="isFeatured"
+              value={formValues.isFeatured ? "true" : "false"}
+              onChange={(event) => setFormValues((prev) => ({ ...prev, isFeatured: event.target.value === "true" }))}
+              className="mt-1 w-full rounded-2xl border border-[#f3ead5] bg-[#fffdf7] px-4 py-3 text-base text-neutral-900 focus:border-[#c9a646] focus:outline-none"
+            >
+              <option value="false">Standard</option>
+              <option value="true">Featured</option>
+            </select>
+          </label>
+          <label className="text-sm font-medium text-neutral-700">
             Category
             <select
               name="category"
@@ -204,6 +252,16 @@ export function NewProductForm() {
                 </option>
               ))}
             </select>
+          </label>
+          <label className="text-sm font-medium text-neutral-700">
+            Collection tag
+            <input
+              name="collectionTag"
+              value={formValues.collectionTag}
+              onChange={handleChange}
+              className="mt-1 w-full rounded-2xl border border-[#f3ead5] bg-[#fffdf7] px-4 py-3 text-base text-neutral-900 focus:border-[#c9a646] focus:outline-none"
+              placeholder="essentials / winter / atelier"
+            />
           </label>
           <label className="text-sm font-medium text-neutral-700">
             Badge
@@ -296,17 +354,80 @@ export function NewProductForm() {
               rows={3}
             />
           </label>
-          <label className="md:col-span-2 text-sm font-medium text-neutral-700">
-            Image URLs
-            <textarea
-              name="images"
-              value={formValues.images}
-              onChange={handleChange}
-              className="mt-1 w-full rounded-2xl border border-[#f3ead5] bg-[#fffdf7] px-4 py-3 text-base text-neutral-900 focus:border-[#c9a646] focus:outline-none"
-              rows={3}
-              placeholder="One URL per line"
-            />
-          </label>
+          <div className="md:col-span-2 space-y-2">
+            <label className="text-sm font-medium text-neutral-700">Detailed Images</label>
+            <div className="rounded-2xl border border-dashed border-[#eadcb7] bg-[#fbf8f1] p-6 text-center">
+              <UploadDropzone
+                endpoint="productImage"
+                onBeforeUploadBegin={(files) => {
+                  const remaining = MAX_PRODUCT_IMAGES - formValues.images.length;
+                  if (remaining <= 0) {
+                    alert(`You can upload up to ${MAX_PRODUCT_IMAGES} images.`);
+                    return [];
+                  }
+                  if (files.length > remaining) {
+                    alert(`You can upload only ${remaining} more ${remaining === 1 ? "image" : "images"}.`);
+                    return files.slice(0, remaining);
+                  }
+                  return files;
+                }}
+                onClientUploadComplete={(res) => {
+                  if (res) {
+                    const urls = res.map((file) => file.url);
+                    setFormValues((prev) => ({
+                      ...prev,
+                      images: [...prev.images, ...urls],
+                    }));
+                  }
+                }}
+                onUploadError={(error: Error) => {
+                  const { data, cause, message } = error as Error & { data?: unknown; cause?: unknown };
+                  const safeMessage = message && message.trim() ? message : "Upload failed";
+                  console.error("[uploadthing] client error", {
+                    message: safeMessage,
+                    data,
+                    cause,
+                    raw: error,
+                  });
+                  const details = data ?? cause ?? null;
+                  const detailsText = details ? `\n${JSON.stringify(details)}` : "";
+                  alert(`ERROR! ${safeMessage}${detailsText}`);
+                }}
+                appearance={{
+                  button: "bg-[#c9a646] text-white",
+                  container: "border-0",
+                  label: "text-neutral-600 hover:text-[#c9a646]",
+                }}
+              />
+            </div>
+            
+            {formValues.images.length > 0 && (
+              <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
+                {formValues.images.map((url, index) => (
+                  <div key={url} className="group relative aspect-[3/4] overflow-hidden rounded-xl border border-[#eadcb7]">
+                    <Image
+                      src={url}
+                      alt={`Product image ${index + 1}`}
+                      fill
+                      className="object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setFormValues((prev) => ({
+                          ...prev,
+                          images: prev.images.filter((_, i) => i !== index),
+                        }));
+                      }}
+                      className="absolute right-2 top-2 rounded-full bg-white/90 p-1.5 text-neutral-900 shadow-sm transition hover:bg-neutral-900 hover:text-white"
+                    >
+                      <span className="material-icons-outlined text-sm">close</span>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -315,10 +436,10 @@ export function NewProductForm() {
       <div className="flex flex-wrap gap-3">
         <button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isSubmitting || isPending}
           className="rounded-full bg-[#c9a646] px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-white transition hover:-translate-y-0.5 hover:bg-[#b3862a] disabled:cursor-not-allowed disabled:opacity-70"
         >
-          {isSubmitting ? "Saving" : "Save product"}
+          {isSubmitting || isPending ? "Saving" : "Save product"}
         </button>
         <button
           type="button"

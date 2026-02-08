@@ -15,6 +15,7 @@ enum OrderStatus {
 }
 
 enum SizeOption {
+  XS
   S
   M
   L
@@ -49,6 +50,8 @@ model User {
   passwordHash String
   role         String   @default("user")
   orders       Order[]
+  cart         Cart?
+  checkoutDraft CheckoutDraft?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
@@ -68,6 +71,9 @@ model Product {
   images       String[]
   category     ProductCategory
   badge        ProductBadge?
+  isActive     Boolean          @default(true)
+  isFeatured   Boolean          @default(false)
+  collectionTag String?
   ratingAvg    Float            @default(0)
   reviewsCount Int              @default(0)
   stock        Int              @default(0)
@@ -75,20 +81,26 @@ model Product {
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
   items        OrderItem[]
+  cartItems    CartItem[]
+  checkoutItems CheckoutDraftItem[]
 }
 
 model Order {
   id              String       @id @default(cuid())
   user            User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
   userId          String?
+  guestId         String?
   items           OrderItem[]
   shippingName    String
+  shippingEmail   String       @default("")
   shippingPhone   String
   shippingAddress String
   shippingCity    String
+  shippingCountry String       @default("")
+  shippingPostal  String       @default("")
   subtotal        Decimal      @db.Decimal(10, 2)
   total           Decimal      @db.Decimal(10, 2)
-  status          OrderStatus  @default(pending)
+  status          OrderStatus  @default(preparing)
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
 }
@@ -103,5 +115,56 @@ model OrderItem {
   image     String?
   qty       Int
   unitPrice Decimal     @db.Decimal(10, 2)
+  size      SizeOption
+}
+
+model Cart {
+  id        String     @id @default(cuid())
+  user      User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String?    @unique
+  guestId   String?    @unique
+  items     CartItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model CartItem {
+  id        String     @id @default(cuid())
+  cart      Cart       @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  cartId    String
+  product   Product    @relation(fields: [productId], references: [id], onDelete: Restrict)
+  productId String
+  name      String
+  image     String?
+  qty       Int
+  unitPrice Decimal    @db.Decimal(10, 2)
+  size      SizeOption
+  createdAt DateTime   @default(now())
+
+  @@unique([cartId, productId, size])
+  @@index([cartId])
+  @@index([productId])
+}
+
+model CheckoutDraft {
+  id        String            @id @default(cuid())
+  user      User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String?           @unique
+  guestId   String?           @unique
+  items     CheckoutDraftItem[]
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+}
+
+model CheckoutDraftItem {
+  id        String        @id @default(cuid())
+  draft     CheckoutDraft @relation(fields: [draftId], references: [id], onDelete: Cascade)
+  draftId   String
+  product   Product       @relation(fields: [productId], references: [id], onDelete: Restrict)
+  productId String
+  name      String
+  image     String?
+  qty       Int
+  unitPrice Decimal       @db.Decimal(10, 2)
   size      SizeOption
 }

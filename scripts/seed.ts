@@ -36,9 +36,9 @@ async function main() {
         price: product.price,
         compareAt: product.compareAt,
         images: product.images,
-        category: product.category as Prisma.ProductCategory,
+        category: product.category as Prisma.ProductCreateInput["category"],
         badge: product.badge
-          ? (product.badge === "Best Seller" ? "Best_Seller" : product.badge) as Prisma.ProductBadge
+          ? (product.badge === "Best Seller" ? "Best_Seller" : product.badge) as Prisma.ProductCreateInput["badge"]
           : null,
         ratingAvg: product.ratingAvg,
         reviewsCount: product.reviewsCount,

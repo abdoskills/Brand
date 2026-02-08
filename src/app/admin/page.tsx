@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { listProductsWithFallback } from "@/lib/productService";
+import { getAllProducts } from "@/lib/db/products";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 export default async function AdminPage() {
   const dbEnabled = Boolean(process.env.DATABASE_URL);
   const [products, orderCount] = await Promise.all([
-    listProductsWithFallback(),
+    getAllProducts(),
     dbEnabled
       ? prisma.order.count().catch((error) => {
           console.warn("Order count failed, defaulting to 0", error);

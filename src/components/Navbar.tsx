@@ -1,34 +1,52 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 
-export default function Navbar() {
-  const getInitialTheme = () => {
-    if (typeof window === "undefined") return true;
+export default function Navbar({ cartBadge }: { cartBadge: ReactNode }) {
+  const [isDark, setIsDark] = useState<boolean>(false);
+  const [isMounted, setIsMounted] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
     const saved =
       localStorage.theme === "dark" ||
       (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches);
     document.documentElement.classList.toggle("dark", saved);
-    return saved;
-  };
-
-  const [isDark, setIsDark] = useState<boolean>(getInitialTheme);
+    setIsDark(saved);
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (!isMounted) return;
     document.documentElement.classList.toggle("dark", isDark);
     localStorage.theme = isDark ? "dark" : "light";
-  }, [isDark]);
+  }, [isDark, isMounted]);
 
   const toggleTheme = () => {
     setIsDark((prev) => !prev);
   };
 
   return (
-    <nav className="fixed w-full z-50 transition-all duration-300 glass-nav border-b border-white/10 dark:border-white/5 bg-white/80 dark:bg-[#0B0B0F]/80">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
-        <div className="flex items-center justify-between h-20">
+    <nav
+      className={`fixed w-full z-50 transition-all duration-300 ${
+        isScrolled
+          ? "bg-white/80 dark:bg-[#0B0B0F]/80 backdrop-blur-md border-b border-neutral-200/50 dark:border-white/10 shadow-sm"
+          : "bg-transparent border-transparent"
+      }`}
+    >
+      <div className="max-w-screen-2xl mx-auto px-6 lg:px-12">
+        <div className={`flex items-center justify-between transition-all duration-300 ${isScrolled ? "h-16" : "h-20"}`}>
           <div className="flex items-center md:hidden">
             <button
               className="text-text-light dark:text-text-dark hover:text-primary transition-colors"
@@ -40,7 +58,9 @@ export default function Navbar() {
 
           <div className="flex-shrink-0 flex items-center justify-center md:justify-start flex-1 md:flex-none">
             <Link
-              className="font-display font-bold text-2xl tracking-widest text-text-light dark:text-white"
+              className={`font-display font-bold tracking-widest text-text-light dark:text-white transition-all duration-300 ${
+                isScrolled ? "text-xl" : "text-2xl"
+              }`}
               href="/"
             >
               FIT <span className="text-primary">IN</span>
@@ -75,6 +95,7 @@ export default function Navbar() {
               className="text-text-light dark:text-text-dark hover:text-primary transition-colors focus:outline-none"
               onClick={toggleTheme}
               aria-label="Toggle theme"
+              disabled={!isMounted}
             >
               <span className={`material-icons-outlined ${isDark ? "hidden" : ""}`}>
                 dark_mode
@@ -100,16 +121,7 @@ export default function Navbar() {
               <span className="material-icons-outlined">person_outline</span>
             </Link>
 
-            <Link
-              className="relative text-text-light dark:text-text-dark hover:text-primary transition-colors"
-              href="/cart"
-              aria-label="Cart"
-            >
-              <span className="material-icons-outlined">shopping_bag</span>
-              <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                0
-              </span>
-            </Link>
+            {cartBadge}
           </div>
         </div>
       </div>

@@ -31,6 +31,9 @@ export function serializeProduct(product: PrismaProduct): ApiProduct {
     images: product.images,
     category: product.category,
     badge: normalizeBadge(product.badge),
+    isActive: product.isActive ?? true,
+    isFeatured: product.isFeatured ?? false,
+    collectionTag: product.collectionTag ?? undefined,
     ratingAvg: product.ratingAvg ?? 0,
     reviewsCount: product.reviewsCount,
     stock: product.stock,
@@ -47,6 +50,7 @@ export function serializeOrder(order: PrismaOrder & { items?: PrismaOrderItem[] 
   return {
     id: order.id,
     userId: order.userId ?? "",
+    guestId: order.guestId ?? undefined,
     items: (order.items ?? []).map((item) => ({
       productId: item.productId,
       name: item.name,
@@ -57,9 +61,12 @@ export function serializeOrder(order: PrismaOrder & { items?: PrismaOrderItem[] 
     })),
     shipping: {
       name: order.shippingName,
+      email: order.shippingEmail,
       phone: order.shippingPhone,
       address: order.shippingAddress,
       city: order.shippingCity,
+      country: order.shippingCountry,
+      postalCode: order.shippingPostal,
     },
     subtotal: Number(order.subtotal),
     total: Number(order.total),

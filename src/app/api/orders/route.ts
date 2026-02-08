@@ -13,11 +13,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: "Cart is empty" }, { status: 400 });
     }
 
-    if (!shipping?.name || !shipping?.phone || !shipping?.address || !shipping?.city) {
+    if (!shipping?.name || !shipping?.email || !shipping?.phone || !shipping?.address || !shipping?.city || !shipping?.country || !shipping?.postalCode) {
       return NextResponse.json({ message: "Shipping information incomplete" }, { status: 400 });
     }
 
-    const allowedSizes = new Set(["S", "M", "L", "XL"]);
+    const allowedSizes = new Set(["XS", "S", "M", "L", "XL"]);
     const productIds = items.map((item: { productId: string }) => item.productId);
 
     const products = await prisma.product.findMany({ where: { id: { in: productIds } } });
@@ -77,9 +77,12 @@ export async function POST(request: NextRequest) {
         data: {
           userId: user.id,
           shippingName: shipping.name,
+          shippingEmail: shipping.email,
           shippingPhone: shipping.phone,
           shippingAddress: shipping.address,
           shippingCity: shipping.city,
+          shippingCountry: shipping.country,
+          shippingPostal: shipping.postalCode,
           subtotal,
           total,
           status: "preparing",

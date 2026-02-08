@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
+import { Toaster } from "sonner";
 import "./globals.css";
 import { AppProviders } from "@/components/providers/AppProviders";
+import Navbar from "@/components/Navbar";
+import CartBadge from "@/components/nav/CartBadge";
 
 export const metadata: Metadata = {
   title: "FIT IN",
@@ -27,7 +30,11 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-background-light text-text-light transition-colors duration-300 font-body antialiased dark:bg-background-dark dark:text-text-dark">
-        <AppProviders>{children}</AppProviders>
+        <AppProviders>
+          <Toaster position="top-center" />
+          <Navbar cartBadge={<CartBadge />} />
+          {children}
+        </AppProviders>
       </body>
     </html>
   );

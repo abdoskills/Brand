@@ -10,14 +10,14 @@ const prisma = new PrismaClient();
 const ADMIN_EMAIL = process.env.SEED_ADMIN ?? "admin@fitin.test";
 const ADMIN_PASSWORD = process.env.SEED_ADMIN_PASSWORD ?? "fitin-admin-123";
 
-function toBadge(badge: string | null | undefined): Prisma.ProductBadge | null {
+function toBadge(badge: string | null | undefined): Prisma.ProductCreateInput["badge"] {
   if (!badge) return null;
   if (badge === "Best Seller") return "Best_Seller";
-  return badge as Prisma.ProductBadge;
+  return badge as Prisma.ProductCreateInput["badge"];
 }
 
-function toCategory(category: string): Prisma.ProductCategory {
-  return category as Prisma.ProductCategory;
+function toCategory(category: string): Prisma.ProductCreateInput["category"] {
+  return category as Prisma.ProductCreateInput["category"];
 }
 
 export async function runSeed() {

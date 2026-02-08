@@ -20,6 +20,9 @@ export interface Product {
     | "jackets"
     | "tops";
   badge: "New" | "Hot" | "Limited" | "Trending" | "Best Seller" | null;
+  isActive: boolean;
+  isFeatured?: boolean;
+  collectionTag?: string | null;
   ratingAvg: number;
   reviewsCount: number;
   stock: number;
@@ -60,12 +63,16 @@ export interface OrderItem {
 export interface Order {
   id: string;
   userId: string;
+  guestId?: string;
   items: OrderItem[];
   shipping: {
     name: string;
+    email: string;
     phone: string;
     address: string;
     city: string;
+    country: string;
+    postalCode: string;
   };
   subtotal: number;
   total: number;

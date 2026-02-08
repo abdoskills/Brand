@@ -2,15 +2,16 @@ import Image from "next/image";
 import Link from "next/link";
 
 import Footer from "@/components/Footer";
-import Navbar from "@/components/Navbar";
 import { PurchasePanel } from "@/components/product/PurchasePanel";
 import { TestOrderButton } from "@/components/product/TestOrderButton";
 import { ProductCard } from "@/components/ui/ProductCard";
-import { findProductBySlugWithFallback, listProductsWithFallback } from "@/lib/productService";
+import { getAllProducts, getProductBySlug } from "@/lib/db/products";
+import { slugify } from "@/lib/slug";
+import { addToCartAction, createTestOrderAction, startBuyNowAction } from "@/app/products/[slug]/actions";
 import type { Product } from "@/types";
 
 interface ProductPageProps {
-  params: { slug: string };
+  params: Promise<{ slug?: string | string[] }>;
 }
 
 export const dynamic = "force-dynamic";
@@ -69,16 +70,32 @@ function LuxuryNotFound({ suggestions }: { suggestions: Product[] }) {
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
-  const [product, allProducts] = await Promise.all([
-    findProductBySlugWithFallback(params.slug),
-    listProductsWithFallback(),
+  const resolvedParams = await params;
+  const rawSlug =
+    typeof resolvedParams?.slug === "string"
+      ? resolvedParams.slug
+      : Array.isArray(resolvedParams?.slug)
+        ? resolvedParams.slug[0]
+        : "";
+  const normalizedSlug = slugify(rawSlug);
+  const [directProduct, allProducts] = await Promise.all([
+    getProductBySlug(rawSlug),
+    getAllProducts(),
   ]);
-  const suggestions = allProducts.filter((item) => item.slug !== params.slug).slice(0, 4);
+  const product =
+    directProduct ??
+    allProducts.find((item) => {
+      const slugMatch = item.slug?.toLowerCase() === normalizedSlug;
+      const idMatch = item.id?.toLowerCase() === normalizedSlug;
+      const nameMatch = slugify(item.name) === normalizedSlug;
+      return slugMatch || idMatch || nameMatch;
+    }) ??
+    null;
+  const suggestions = allProducts.filter((item) => item.slug !== normalizedSlug).slice(0, 4);
 
   if (!product) {
     return (
       <>
-        <Navbar />
         <main className="bg-white px-6 py-14 lg:px-10 lg:py-16">
           <div className="mx-auto max-w-6xl">
             <LuxuryNotFound suggestions={suggestions} />
@@ -94,7 +111,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   return (
     <>
-      <Navbar />
       <main className="bg-white text-neutral-900">
         <div className="mx-auto max-w-7xl px-6 py-14 lg:px-12 lg:py-16">
           <div className="grid gap-12 lg:grid-cols-[1.05fr,0.95fr]">
@@ -153,7 +169,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 ) : null}
               </div>
 
-              <PurchasePanel product={product} />
+                <PurchasePanel
+                  product={product}
+                  onAddToCart={addToCartAction.bind(null, product.id)}
+                  onBuyNow={startBuyNowAction.bind(null, product.id)}
+                />
               <div className="rounded-3xl border border-[#eadcb7] bg-[#fdfaf5] p-5 shadow-[0_16px_40px_rgba(201,166,70,0.12)]">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div>
@@ -161,7 +181,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                     <p className="font-[playfair] text-xl text-neutral-900">Place a test order</p>
                     <p className="text-sm text-neutral-600">Creates a single-item order so you can review the workflow inside the admin console.</p>
                   </div>
-                  <TestOrderButton slug={product.slug} />
+                  <TestOrderButton onCreate={createTestOrderAction.bind(null, product.id)} />
                 </div>
               </div>
 

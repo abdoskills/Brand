@@ -2,16 +2,24 @@
 
 import { useState } from "react";
 
+import { useRouter } from "next/navigation";
+import { useTransition } from "react";
+import { toast } from "sonner";
+
 import { Button } from "@/components/ui/Button";
-import type { Product } from "@/lib/products";
+import type { Product } from "@/types";
 
 interface PurchasePanelProps {
   product: Product;
+  onAddToCart: (size: string, qty: number) => Promise<{ ok: boolean; message?: string }>;
+  onBuyNow: (size: string, qty: number) => Promise<{ ok: boolean; draftId?: string; message?: string }>;
 }
 
-export function PurchasePanel({ product }: PurchasePanelProps) {
+export function PurchasePanel({ product, onAddToCart, onBuyNow }: PurchasePanelProps) {
   const [selectedSize, setSelectedSize] = useState<string | null>(product.sizes[0] ?? null);
   const [quantity, setQuantity] = useState(1);
+  const [pending, startTransition] = useTransition();
+  const router = useRouter();
 
   const decrement = () => setQuantity((q) => Math.max(1, q - 1));
   const increment = () => setQuantity((q) => q + 1);
@@ -67,14 +75,40 @@ export function PurchasePanel({ product }: PurchasePanelProps) {
 
       <div className="flex flex-col gap-3">
         <Button
-          disabled={!product.inStock || !selectedSize}
+          disabled={!product.inStock || !selectedSize || pending}
+          onClick={() => {
+            if (!selectedSize) return;
+
+            // Call global increment for immediate UI feedback
+            const inc = (globalThis as any).__incCart;
+            if (inc) inc(quantity);
+
+            toast.success("Added to bag", { description: product.name });
+
+            startTransition(async () => {
+              const result = await onAddToCart(selectedSize, quantity);
+              if (!result.ok) {
+                 toast.error(result.message || "Failed to add to cart");
+              }
+            });
+          }}
           className="w-full rounded-full bg-[#C7A76C] py-3.5 text-sm font-semibold uppercase tracking-[0.18em] text-white transition hover:-translate-y-0.5 hover:bg-[#b68f57] hover:shadow-[0_14px_40px_rgba(199,167,108,0.35)] disabled:cursor-not-allowed disabled:bg-neutral-300"
         >
-          {product.inStock ? "Add to Bag" : "Sold Out"}
+          {product.inStock ? (pending ? "Adding" : "Add to Bag") : "Sold Out"}
         </Button>
         <Button
           variant="outline"
-          disabled={!product.inStock || !selectedSize}
+          disabled={!product.inStock || !selectedSize || pending}
+          onClick={() => {
+            if (!selectedSize) return;
+            startTransition(async () => {
+              const result = await onBuyNow(selectedSize, quantity);
+              if (result.ok) {
+                const target = result.draftId ? `/checkout?orderId=${result.draftId}` : "/checkout";
+                router.push(target);
+              }
+            });
+          }}
           className="w-full rounded-full border border-[#C7A76C] py-3.5 text-sm font-semibold uppercase tracking-[0.18em] text-neutral-900 transition hover:-translate-y-0.5 hover:shadow-[0_14px_40px_rgba(0,0,0,0.08)] disabled:cursor-not-allowed"
         >
           Buy Now

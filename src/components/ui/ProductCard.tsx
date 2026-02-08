@@ -1,7 +1,6 @@
 import Link from "next/link";
 
-import { formatPrice } from "@/lib/localDrops";
-import type { Product } from "@/lib/products";
+import type { Product } from "@/types";
 
 interface ProductCardProps {
   product: Product;
@@ -15,6 +14,12 @@ const badgeTone: Record<NonNullable<Product["badge"]>, string> = {
   Trending: "bg-slate-100 text-slate-700",
   "Best Seller": "bg-emerald-50 text-emerald-700",
 };
+
+const currencyFormatter = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
+
+function formatPrice(value: number) {
+  return currencyFormatter.format(value);
+}
 
 export function ProductCard({ product, orientation = "vertical" }: ProductCardProps) {
   const hasImage = Boolean(product.images[0]);
