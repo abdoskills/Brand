@@ -14,10 +14,10 @@ const baseClasses =
   "inline-flex items-center justify-center gap-2 font-semibold tracking-[0.18em] uppercase transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-60 disabled:cursor-not-allowed";
 
 const variantClasses: Record<ButtonVariant, string> = {
-  primary: "bg-primary text-white hover:bg-primary-hover focus-visible:outline-primary",
+  primary: "bg-accent text-white hover:bg-accent-hover focus-visible:outline-accent",
   outline:
-    "border border-border-light text-text-light hover:border-primary hover:text-primary bg-white focus-visible:outline-primary",
-  ghost: "text-text-light hover:text-primary focus-visible:outline-primary",
+    "border border-primary text-primary hover:bg-primary/5 focus-visible:outline-primary bg-transparent",
+  ghost: "text-text hover:text-primary focus-visible:outline-primary",
 };
 
 const sizeClasses: Record<ButtonSize, string> = {

@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-import Footer from "@/components/Footer";
 import { HomeHero } from "@/components/home/HomeHero";
 import { NewArrivalsSection } from "@/components/home/NewArrivalsSection";
 import { getNewArrivals } from "@/lib/db/products";
@@ -17,16 +16,16 @@ export default async function HomePage() {
         <NewArrivalsSection products={products} />
       </main>
 
-      <section className="w-full bg-surface-light dark:bg-surface-dark py-20 border-t border-border-light dark:border-border-dark">
+      <section className="w-full bg-surface py-20 border-t border-border">
         <div className="max-w-7xl mx-auto px-6 lg:px-12">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
-              <h3 className="font-display text-3xl text-text-light dark:text-white">The Golden Standard</h3>
-              <p className="text-gray-600 dark:text-gray-400 text-sm leading-7">
+              <h3 className="font-display text-3xl text-text">The Golden Standard</h3>
+              <p className="text-muted text-sm leading-7">
                 At FIT IN, we believe in the transformative power of the perfect fit. Our upcoming collection blends timeless silhouette with modern audacity. Gold isn&apos;t just a color in our palette; it&apos;s the standard of our craftsmanship.
               </p>
               <Link
-                className="inline-block text-xs font-bold uppercase tracking-[0.2em] border-b border-primary text-text-light dark:text-white pb-1 hover:text-primary transition-colors"
+                className="inline-block text-xs font-bold uppercase tracking-[0.2em] border-b border-primary text-text pb-1 hover:text-primary transition-colors"
                 href="/about"
               >
                 Read Our Story
@@ -35,7 +34,7 @@ export default async function HomePage() {
             <div className="relative h-64 md:h-80 w-full overflow-hidden rounded-sm">
               <img
                 alt="Luxury Texture"
-                className="absolute inset-0 w-full h-full object-cover opacity-80 hover:scale-105 transition-transform duration-1000 grayscale dark:opacity-60"
+                className="absolute inset-0 w-full h-full object-cover opacity-80 hover:scale-105 transition-transform duration-1000 grayscale"
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuALrmU7ZO0zpfkzysIAGCdIB2fME0Qx65hyR1LCAhW4NC10wdKKIgBFkUc35F2U_cpsjj4kZqgThMNInNdg0K_lRImf9LkzNqjPwcGdfjNZoQtOtsQBT8loJ_BAWOkVMCl2ZDzE_F8LZSKr1b3oI0neffM1zhkyE6Ebr7yjp0Q8XplTzlVR3el2DbzXKeKoiYhkahU-1J_RkDxk35_RemzpU0nB668025ciNPSy8gk9SwkDMS5gECrRvR8ijdJbs2aViuNG-ioNLYBD"
               />
               <div className="absolute inset-0 bg-primary/10 mix-blend-overlay" />
@@ -44,7 +43,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <Footer />
     </>
   );
 }

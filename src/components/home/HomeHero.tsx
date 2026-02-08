@@ -10,7 +10,12 @@ export function HomeHero() {
   const easing: [number, number, number, number] = [0.25, 0.1, 0.25, 1];
 
   return (
-    <header className="relative isolate flex min-h-screen items-center justify-center overflow-hidden bg-white px-6 py-20 text-text-default">
+    <header className="relative isolate flex min-h-screen items-center justify-center overflow-hidden bg-background px-6 py-20 text-text">
+      <div className="pointer-events-none absolute inset-0 -z-20 flex items-center justify-center">
+        <span className="subtle-text-stroke-title text-[clamp(6rem,18vw,14rem)] font-display tracking-[0.18em] opacity-70 blur-[0.2px]">
+          FIT IN
+        </span>
+      </div>
       <motion.div
         className="pointer-events-none absolute inset-0 -z-20"
         initial={{ opacity: 0, y: 12, scale: 0.98 }}
@@ -27,13 +32,13 @@ export function HomeHero() {
             alt=""
             fill
             priority
-            className="h-full w-full object-cover blur-lg opacity-45 scale-105"
+            className="h-full w-full object-cover blur-lg opacity-35 scale-105"
             aria-hidden
           />
         </motion.div>
       </motion.div>
 
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-white/92 via-white/85 to-white/72" />
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-background/92 via-background/85 to-background/70" />
 
       <motion.div
         className="relative mx-auto mt-6 flex w-full max-w-5xl flex-col items-center gap-6 text-center sm:mt-10 lg:mt-12"
@@ -52,7 +57,8 @@ export function HomeHero() {
           }}
         >
           <span className="text-[11px] font-semibold uppercase tracking-[0.24em] text-primary/80">Fit In · New Drop</span>
-          <span className="h-px w-16 bg-[#C7A76C]/60" />
+          <span className="h-px w-16 bg-accent/60" />
+          <h1 className="font-display text-3xl text-text/90 sm:text-4xl lg:text-5xl">Everything Everywhere Everytime</h1>
         </motion.div>
 
         <motion.div
@@ -64,9 +70,6 @@ export function HomeHero() {
         >
           <Link href="/products" className="inline-flex">
             <Button size="lg">Shop Now</Button>
-          </Link>
-          <Link href="/collections" className="text-xs font-semibold uppercase tracking-[0.2em] text-text-default hover:text-primary">
-            View Collection
           </Link>
         </motion.div>
       </motion.div>

@@ -27,7 +27,7 @@ export function PurchasePanel({ product, onAddToCart, onBuyNow }: PurchasePanelP
   return (
     <div className="space-y-5">
       <div>
-        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-neutral-600">Sizes</p>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">Sizes</p>
         <div className="mt-3 flex flex-wrap gap-3">
           {product.sizes.map((size) => {
             const active = selectedSize === size;
@@ -37,10 +37,10 @@ export function PurchasePanel({ product, onAddToCart, onBuyNow }: PurchasePanelP
                 type="button"
                 onClick={() => setSelectedSize(size)}
                 disabled={!product.inStock}
-                className={`rounded-full border px-4 py-2 text-sm font-semibold transition duration-200 focus:outline-none focus:ring-2 focus:ring-[#C7A76C] disabled:cursor-not-allowed ${
+                className={`rounded-full border px-4 py-2 text-sm font-semibold transition duration-200 focus:outline-none focus:ring-2 focus:ring-accent disabled:cursor-not-allowed ${
                   active
-                    ? "border-[#C7A76C] bg-[#fdf7eb] text-neutral-900 shadow-[0_10px_24px_rgba(199,167,108,0.18)]"
-                    : "border-[#e7dcc1] text-neutral-700 hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(0,0,0,0.08)]"
+                    ? "border-primary bg-background text-text shadow-[0_10px_24px_rgba(30,107,133,0.12)]"
+                    : "border-border text-muted hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(0,0,0,0.08)]"
                 }`}
               >
                 {size}
@@ -51,21 +51,21 @@ export function PurchasePanel({ product, onAddToCart, onBuyNow }: PurchasePanelP
       </div>
 
       <div className="flex items-center gap-3">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-neutral-600">Quantity</p>
-        <div className="flex items-center overflow-hidden rounded-full border border-[#e7dcc1] bg-white shadow-[0_12px_30px_rgba(0,0,0,0.06)]">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">Quantity</p>
+        <div className="flex items-center overflow-hidden rounded-full border border-border bg-surface shadow-[0_12px_30px_rgba(0,0,0,0.06)]">
           <button
             type="button"
             onClick={decrement}
-            className="h-10 w-10 text-lg font-semibold text-neutral-700 transition hover:bg-[#f5ebd6]"
+            className="h-10 w-10 text-lg font-semibold text-muted transition hover:bg-background"
             aria-label="Decrease quantity"
           >
             -
           </button>
-          <span className="px-4 text-sm font-semibold text-neutral-900">{quantity}</span>
+          <span className="px-4 text-sm font-semibold text-text">{quantity}</span>
           <button
             type="button"
             onClick={increment}
-            className="h-10 w-10 text-lg font-semibold text-neutral-700 transition hover:bg-[#f5ebd6]"
+            className="h-10 w-10 text-lg font-semibold text-muted transition hover:bg-background"
             aria-label="Increase quantity"
           >
             +
@@ -92,7 +92,7 @@ export function PurchasePanel({ product, onAddToCart, onBuyNow }: PurchasePanelP
               }
             });
           }}
-          className="w-full rounded-full bg-[#C7A76C] py-3.5 text-sm font-semibold uppercase tracking-[0.18em] text-white transition hover:-translate-y-0.5 hover:bg-[#b68f57] hover:shadow-[0_14px_40px_rgba(199,167,108,0.35)] disabled:cursor-not-allowed disabled:bg-neutral-300"
+          className="w-full rounded-full bg-accent py-3.5 text-sm font-semibold uppercase tracking-[0.18em] text-white transition hover:-translate-y-0.5 hover:bg-accent-hover hover:shadow-[0_14px_40px_rgba(212,175,55,0.25)] disabled:cursor-not-allowed disabled:bg-border"
         >
           {product.inStock ? (pending ? "Adding" : "Add to Bag") : "Sold Out"}
         </Button>
@@ -109,7 +109,7 @@ export function PurchasePanel({ product, onAddToCart, onBuyNow }: PurchasePanelP
               }
             });
           }}
-          className="w-full rounded-full border border-[#C7A76C] py-3.5 text-sm font-semibold uppercase tracking-[0.18em] text-neutral-900 transition hover:-translate-y-0.5 hover:shadow-[0_14px_40px_rgba(0,0,0,0.08)] disabled:cursor-not-allowed"
+          className="w-full rounded-full border border-primary py-3.5 text-sm font-semibold uppercase tracking-[0.18em] text-primary transition hover:-translate-y-0.5 hover:shadow-[0_14px_40px_rgba(30,107,133,0.16)] disabled:cursor-not-allowed"
         >
           Buy Now
         </Button>

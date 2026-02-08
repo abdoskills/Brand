@@ -41,58 +41,55 @@ export default function Navbar({ cartBadge }: { cartBadge: ReactNode }) {
     <nav
       className={`fixed w-full z-50 transition-all duration-300 ${
         isScrolled
-          ? "bg-white/80 dark:bg-[#0B0B0F]/80 backdrop-blur-md border-b border-neutral-200/50 dark:border-white/10 shadow-sm"
-          : "bg-transparent border-transparent"
+          ? "glass-nav bg-background/90 border-b border-border/70 shadow-[0_8px_30px_rgba(26,78,97,0.12)]"
+          : "glass-nav bg-background/50 border-b border-transparent"
       }`}
     >
-      <div className="max-w-screen-2xl mx-auto px-6 lg:px-12">
-        <div className={`flex items-center justify-between transition-all duration-300 ${isScrolled ? "h-16" : "h-20"}`}>
-          <div className="flex items-center md:hidden">
+      <div className="mx-auto max-w-7xl px-6">
+        <div className="flex h-20 items-center justify-between">
+          <div className="flex min-w-[120px] items-center gap-3 md:min-w-[160px]">
             <button
-              className="text-text-light dark:text-text-dark hover:text-primary transition-colors"
+              className="text-text hover:text-primary transition-colors md:hidden"
               aria-label="Open menu"
             >
               <span className="material-icons-outlined">menu</span>
             </button>
-          </div>
-
-          <div className="flex-shrink-0 flex items-center justify-center md:justify-start flex-1 md:flex-none">
             <Link
-              className={`font-display font-bold tracking-widest text-text-light dark:text-white transition-all duration-300 ${
+              className={`group relative font-display font-semibold text-primary transition-all duration-300 ${
                 isScrolled ? "text-xl" : "text-2xl"
-              }`}
+              } tracking-[0.18em] hover:tracking-[0.24em]`}
               href="/"
             >
-              FIT <span className="text-primary">IN</span>
+              FIT IN
+              <span className="ml-2 inline-block h-1.5 w-1.5 rounded-full bg-accent align-middle" />
+              <span className="absolute -bottom-2 left-0 h-px w-0 bg-primary transition-all duration-300 group-hover:w-full" />
             </Link>
           </div>
 
-          <div className="hidden md:block">
-            <div className="flex items-baseline space-x-12">
-              <Link
-                className="luxury-text-spacing text-xs font-medium text-text-light dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors uppercase border-b-2 border-transparent hover:border-primary pb-1"
-                href="/"
-              >
-                Home
-              </Link>
-              <Link
-                className="luxury-text-spacing text-xs font-medium text-text-light dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors uppercase border-b-2 border-transparent hover:border-primary pb-1"
-                href="/collections"
-              >
-                Collections
-              </Link>
-              <Link
-                className="luxury-text-spacing text-xs font-medium text-text-light dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors uppercase border-b-2 border-transparent hover:border-primary pb-1"
-                href="/about"
-              >
-                About
-              </Link>
-            </div>
+          <div className="hidden flex-1 items-center justify-center gap-12 md:flex">
+            <Link
+              className="luxury-text-spacing text-xs font-medium text-text hover:text-primary transition-colors uppercase border-b-2 border-transparent hover:border-primary pb-1"
+              href="/"
+            >
+              Home
+            </Link>
+            <Link
+              className="luxury-text-spacing text-xs font-medium text-text hover:text-primary transition-colors uppercase border-b-2 border-transparent hover:border-primary pb-1"
+              href="/collections"
+            >
+              Collections
+            </Link>
+            <Link
+              className="luxury-text-spacing text-xs font-medium text-text hover:text-primary transition-colors uppercase border-b-2 border-transparent hover:border-primary pb-1"
+              href="/about"
+            >
+              About
+            </Link>
           </div>
 
-          <div className="flex items-center space-x-6">
+          <div className="flex min-w-[140px] items-center justify-end gap-4 md:min-w-[180px]">
             <button
-              className="text-text-light dark:text-text-dark hover:text-primary transition-colors focus:outline-none"
+              className="text-text hover:text-primary transition-colors focus:outline-none"
               onClick={toggleTheme}
               aria-label="Toggle theme"
               disabled={!isMounted}
@@ -106,7 +103,7 @@ export default function Navbar({ cartBadge }: { cartBadge: ReactNode }) {
             </button>
 
             <Link
-              className="text-text-light dark:text-text-dark hover:text-primary transition-colors"
+              className="text-text hover:text-primary transition-colors"
               href="/search"
               aria-label="Search"
             >
@@ -114,7 +111,7 @@ export default function Navbar({ cartBadge }: { cartBadge: ReactNode }) {
             </Link>
 
             <Link
-              className="text-text-light dark:text-text-dark hover:text-primary transition-colors"
+              className="text-text hover:text-primary transition-colors"
               href="/login"
               aria-label="Login"
             >

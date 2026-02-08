@@ -7,7 +7,7 @@ export default async function CartBadge() {
   
   return (
     <Suspense fallback={
-      <div className="relative text-text-light dark:text-text-dark">
+      <div className="relative text-text">
         <span className="material-icons-outlined">shopping_bag</span>
       </div>
     }>

@@ -19,8 +19,8 @@ export function SizeSelector({ value, onChange }: SizeSelectorProps) {
             onClick={() => onChange(size)}
             className={`flex h-10 w-10 items-center justify-center rounded-full border text-sm font-bold uppercase transition-colors ${
               isActive
-                ? "border-street-red bg-street-red text-white"
-                : "border-neutral-700 text-white hover:border-street-red"
+                ? "border-accent bg-accent text-white"
+                : "border-border text-text hover:border-accent"
             }`}
           >
             {size}

@@ -36,7 +36,7 @@ export function TestOrderButton({ onCreate }: TestOrderButtonProps) {
         type="button"
         onClick={placeOrder}
         disabled={pending}
-        className="rounded-full bg-[#c9a646] px-6 py-2.5 text-sm font-semibold uppercase tracking-[0.18em] text-white transition duration-200 hover:-translate-y-0.5 hover:bg-[#b3862a] hover:shadow-[0_14px_40px_rgba(201,166,70,0.35)] disabled:cursor-not-allowed disabled:opacity-60"
+        className="rounded-full bg-accent px-6 py-2.5 text-sm font-semibold uppercase tracking-[0.18em] text-white transition duration-200 hover:-translate-y-0.5 hover:bg-accent-hover hover:shadow-[0_14px_40px_rgba(212,175,55,0.25)] disabled:cursor-not-allowed disabled:opacity-60"
       >
         {pending ? "Placing..." : "Place Test Order"}
       </button>

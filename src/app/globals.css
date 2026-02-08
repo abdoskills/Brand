@@ -7,12 +7,12 @@
 :root {
   color-scheme: light;
   --font-display: "Playfair Display", serif;
-  --font-body: "Montserrat", sans-serif;
+  --font-body: "Inter", sans-serif;
   --font-icons: "Material Symbols Outlined";
 }
 
 body {
-  @apply bg-background-light text-text-light font-body antialiased selection:bg-primary selection:text-white transition-colors duration-300 dark:bg-background-dark dark:text-text-dark;
+  @apply bg-background text-text font-body antialiased selection:bg-accent selection:text-white transition-colors duration-300;
   min-height: 100dvh;
 }
 
@@ -57,6 +57,12 @@ main {
   -webkit-backdrop-filter: blur(12px);
 }
 
+.subtle-text-stroke-title {
+  -webkit-text-stroke: 1px rgba(30, 107, 133, 0.22);
+  color: transparent;
+  text-shadow: 0 18px 50px rgba(30, 107, 133, 0.12);
+}
+
 @keyframes fadeIn {
   0% {
     opacity: 0;
@@ -81,10 +87,10 @@ main {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c7a76c;
+  background: #1e6b85;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #b08d55;
+  background: #17596f;
 }

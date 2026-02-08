@@ -28,7 +28,7 @@ export function ProductActions({ sizes = defaultSizes }: ProductActionsProps) {
             className={`border px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] transition ${
               selectedSize === size
                 ? "border-primary text-primary"
-                : "border-border-light text-text-default hover:border-primary"
+                : "border-border text-text hover:border-primary"
             }`}
           >
             {size}
@@ -37,12 +37,12 @@ export function ProductActions({ sizes = defaultSizes }: ProductActionsProps) {
       </div>
 
       <div className="flex items-center gap-3">
-        <div className="flex items-center border border-border-light">
-          <button type="button" onClick={decrement} className="px-3 py-2 text-sm text-text-default hover:text-primary">
+        <div className="flex items-center border border-border">
+          <button type="button" onClick={decrement} className="px-3 py-2 text-sm text-text hover:text-primary">
             –
           </button>
-          <span className="px-4 text-sm font-semibold text-text-default">{qty}</span>
-          <button type="button" onClick={increment} className="px-3 py-2 text-sm text-text-default hover:text-primary">
+          <span className="px-4 text-sm font-semibold text-text">{qty}</span>
+          <button type="button" onClick={increment} className="px-3 py-2 text-sm text-text hover:text-primary">
             +
           </button>
         </div>

@@ -32,7 +32,7 @@ export function RequireAuth({ children, requireAdmin = false }: RequireAuthProps
 
   if (!user) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center text-sm text-neutral-400">
+      <div className="flex min-h-[60vh] items-center justify-center text-sm text-muted">
         Authenticating...
       </div>
     );

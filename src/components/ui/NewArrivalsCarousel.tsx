@@ -11,12 +11,12 @@ export function NewArrivalsCarousel({ products }: NewArrivalsCarouselProps) {
   return (
     <section className="w-full px-4 pb-10 pt-10 lg:flex lg:h-full lg:flex-col lg:px-0 lg:pt-16">
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="font-display text-2xl font-black uppercase italic tracking-tighter text-white lg:text-3xl">
+        <h2 className="font-display text-2xl font-semibold tracking-tight text-text lg:text-3xl">
           New Arrivals
         </h2>
         <Link
           href="/collections/new"
-          className="text-xs font-bold uppercase tracking-widest text-street-red hover:underline"
+          className="text-xs font-semibold uppercase tracking-widest text-primary hover:underline"
         >
           View All
         </Link>

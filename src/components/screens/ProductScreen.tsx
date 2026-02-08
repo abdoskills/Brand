@@ -46,33 +46,33 @@ export function ProductScreen({ product, related }: ProductScreenProps) {
         <div className="py-6">
           <div className="flex flex-col gap-10 lg:grid lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] lg:items-start lg:gap-16">
             <ProductGallery images={heroImages} />
-            <div className="flex flex-col gap-4 rounded-none lg:sticky lg:top-24 lg:rounded-3xl lg:border lg:border-white/10 lg:bg-neutral-900/70 lg:p-10 lg:backdrop-blur-xl">
+            <div className="flex flex-col gap-4 rounded-none lg:sticky lg:top-24 lg:rounded-3xl lg:border lg:border-border lg:bg-surface lg:p-10 lg:backdrop-blur-xl">
               <div className="flex items-center gap-2">
               {product.badge ? (
-                <span className="rounded-sm border border-street-red px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-street-red">
+                <span className="rounded-full border border-accent/30 bg-accent/10 px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-accent">
                   {product.badge}
                 </span>
               ) : null}
-              <span className="text-xs font-medium uppercase tracking-widest text-neutral-500">
+              <span className="text-xs font-medium uppercase tracking-widest text-muted">
                 {product.category}
               </span>
             </div>
-              <h1 className="font-display text-3xl font-black uppercase italic tracking-tight text-white lg:text-4xl">
+              <h1 className="font-display text-3xl font-black uppercase italic tracking-tight text-text lg:text-4xl">
                 {product.name}
               </h1>
               <RatingBadge rating={product.ratingAvg} reviews={product.reviewsCount} />
               <div className="flex items-center gap-3">
-                <p className="text-2xl font-bold text-white lg:text-3xl">${product.price.toFixed(2)}</p>
+                <p className="text-2xl font-bold text-text lg:text-3xl">${product.price.toFixed(2)}</p>
                 {product.compareAt ? (
-                  <p className="text-sm font-medium text-neutral-500 line-through lg:text-base">
+                  <p className="text-sm font-medium text-muted line-through lg:text-base">
                     ${product.compareAt.toFixed(2)}
                   </p>
                 ) : null}
               </div>
-              <p className="text-sm text-neutral-300 lg:text-base">{product.description}</p>
+              <p className="text-sm text-muted lg:text-base">{product.description}</p>
               <StockIndicator stock={product.stock} />
               <div className="mt-4 flex flex-col gap-3">
-                <div className="text-xs font-bold uppercase tracking-widest text-neutral-400">
+                <div className="text-xs font-bold uppercase tracking-widest text-muted">
                   Select Size
                 </div>
                 <SizeSelector
@@ -83,7 +83,7 @@ export function ProductScreen({ product, related }: ProductScreenProps) {
                   }}
                 />
                 {error ? (
-                  <p className="text-xs font-semibold uppercase tracking-widest text-red-500">
+                  <p className="text-xs font-semibold uppercase tracking-widest text-accent">
                     {error}
                   </p>
                 ) : null}
@@ -91,30 +91,30 @@ export function ProductScreen({ product, related }: ProductScreenProps) {
               <button
                 type="button"
                 onClick={handleAddToCart}
-                className="mt-4 w-full rounded-sm bg-white py-3 text-sm font-bold uppercase tracking-widest text-black transition-colors hover:bg-neutral-200 lg:rounded-full lg:py-3.5 lg:text-base"
+                className="mt-4 w-full rounded-full bg-accent py-3 text-sm font-bold uppercase tracking-widest text-white transition-colors hover:bg-accent-hover lg:py-3.5 lg:text-base"
                 disabled={product.stock === 0}
               >
                 {product.stock === 0 ? "Sold Out" : "Add to Cart"}
               </button>
             </div>
           </div>
-          <div className="mt-10 grid gap-4 rounded-2xl border border-white/10 bg-neutral-900/70 p-6 lg:grid-cols-3 lg:gap-6 lg:p-8">
-            <div className="rounded-xl border border-white/10 bg-black/30 p-4 lg:p-5">
-              <h3 className="font-display text-lg font-semibold text-white">Delivery & Returns</h3>
-              <p className="mt-2 text-sm text-neutral-300">Free standard delivery over $150. Express options available. Returns accepted within 30 days in original condition.</p>
+          <div className="mt-10 grid gap-4 rounded-2xl border border-border bg-surface p-6 lg:grid-cols-3 lg:gap-6 lg:p-8">
+            <div className="rounded-xl border border-border bg-background/70 p-4 lg:p-5">
+              <h3 className="font-display text-lg font-semibold text-text">Delivery & Returns</h3>
+              <p className="mt-2 text-sm text-muted">Free standard delivery over $150. Express options available. Returns accepted within 30 days in original condition.</p>
             </div>
-            <div className="rounded-xl border border-white/10 bg-black/30 p-4 lg:p-5">
-              <h3 className="font-display text-lg font-semibold text-white">Payment & Security</h3>
-              <p className="mt-2 text-sm text-neutral-300">Secure checkout with major cards and wallets. Payment is encrypted end-to-end for your protection.</p>
+            <div className="rounded-xl border border-border bg-background/70 p-4 lg:p-5">
+              <h3 className="font-display text-lg font-semibold text-text">Payment & Security</h3>
+              <p className="mt-2 text-sm text-muted">Secure checkout with major cards and wallets. Payment is encrypted end-to-end for your protection.</p>
             </div>
-            <div className="rounded-xl border border-white/10 bg-black/30 p-4 lg:p-5">
-              <h3 className="font-display text-lg font-semibold text-white">Fit & Care</h3>
-              <p className="mt-2 text-sm text-neutral-300">True to size with a tailored drape. Machine wash cold, lay flat to dry to preserve shape and fabric integrity.</p>
+            <div className="rounded-xl border border-border bg-background/70 p-4 lg:p-5">
+              <h3 className="font-display text-lg font-semibold text-text">Fit & Care</h3>
+              <p className="mt-2 text-sm text-muted">True to size with a tailored drape. Machine wash cold, lay flat to dry to preserve shape and fabric integrity.</p>
             </div>
           </div>
         </div>
         <section className="pb-12 pt-10 lg:pb-4">
-          <h2 className="mb-4 font-display text-2xl font-black uppercase italic tracking-tighter text-white lg:text-3xl">
+          <h2 className="mb-4 font-display text-2xl font-black uppercase italic tracking-tighter text-text lg:text-3xl">
             You may also like
           </h2>
           <div className="flex gap-4 overflow-x-auto pb-2 no-scrollbar snap-x snap-mandatory lg:grid lg:grid-cols-4 lg:gap-6 lg:overflow-visible lg:pb-0 lg:snap-none">
@@ -125,7 +125,7 @@ export function ProductScreen({ product, related }: ProductScreenProps) {
         </section>
       </main>
       <BottomNav />
-      <div className="h-10 bg-background-dark lg:hidden" />
+      <div className="h-10 bg-background lg:hidden" />
     </MobileShell>
   );
 }

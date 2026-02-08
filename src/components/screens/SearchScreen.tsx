@@ -18,10 +18,10 @@ export function SearchScreen() {
       <TopAppBar cartCount={count} onCartClick={() => router.push("/cart")} />
       <main className="flex-1 px-4 pb-24">
         <section className="py-6">
-          <h1 className="font-display text-3xl font-black uppercase italic tracking-tight text-white">
+          <h1 className="font-display text-3xl font-semibold tracking-tight text-text">
             Search
           </h1>
-          <p className="mt-2 text-xs uppercase tracking-widest text-neutral-500">
+          <p className="mt-2 text-xs uppercase tracking-widest text-muted">
             Coming soon — curated search across the catalog.
           </p>
           <input
@@ -29,12 +29,12 @@ export function SearchScreen() {
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search fit essentials..."
-            className="mt-6 h-12 w-full rounded-sm border border-neutral-700 bg-transparent px-3 text-sm text-white"
+            className="mt-6 h-12 w-full rounded-sm border border-border bg-surface px-3 text-sm text-text placeholder:text-muted"
           />
         </section>
       </main>
       <BottomNav />
-      <div className="h-10 bg-background-dark" />
+      <div className="h-10 bg-background" />
     </MobileShell>
   );
 }

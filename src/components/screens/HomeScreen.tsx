@@ -49,7 +49,7 @@ export function HomeScreen({ products }: HomeScreenProps) {
         </div>
       </main>
       <BottomNav />
-      <div className="h-10 bg-background-dark lg:hidden" />
+      <div className="h-10 bg-background lg:hidden" />
     </MobileShell>
   );
 }

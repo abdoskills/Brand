@@ -16,16 +16,16 @@ export function FavoritesScreen() {
       <TopAppBar cartCount={count} onCartClick={() => router.push("/cart")} />
       <main className="flex-1 px-4 pb-24">
         <section className="py-6">
-          <h1 className="font-display text-3xl font-black uppercase italic tracking-tight text-white">
+          <h1 className="font-display text-3xl font-semibold tracking-tight text-text">
             Favorites
           </h1>
-          <div className="mt-4 rounded-sm border border-neutral-800 bg-neutral-900 p-6 text-sm text-neutral-300">
+          <div className="mt-4 rounded-sm border border-border bg-surface p-6 text-sm text-muted">
             Save your go-to pieces once wishlists launch. For now, keep them in cart so they stay on your radar.
           </div>
         </section>
       </main>
       <BottomNav />
-      <div className="h-10 bg-background-dark" />
+      <div className="h-10 bg-background" />
     </MobileShell>
   );
 }

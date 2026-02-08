@@ -21,13 +21,13 @@ export default function CartBadgeClient({ initialCount }: { initialCount: number
 
   return (
     <Link
-      className="relative text-text-light dark:text-text-dark hover:text-primary transition-colors"
+      className="relative text-text hover:text-primary transition-colors"
       href="/cart"
       aria-label="Cart"
     >
       <span className="material-icons-outlined">shopping_bag</span>
       {count > 0 && (
-        <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+        <span className="absolute -top-1 -right-1 bg-accent text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
           {count}
         </span>
       )}

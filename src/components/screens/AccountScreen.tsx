@@ -45,21 +45,21 @@ export function AccountScreen() {
         <main className="flex-1 px-4 pb-24 lg:px-10 lg:pb-20">
           <section className="py-6">
             <div className="flex flex-col gap-6 lg:grid lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.4fr)] lg:items-start lg:gap-12">
-              <div className="rounded-sm border border-neutral-800 bg-neutral-900 p-4 text-sm text-neutral-300 lg:sticky lg:top-24 lg:rounded-3xl lg:border-white/10 lg:bg-neutral-900/70 lg:p-8 lg:shadow-[0_30px_80px_rgba(0,0,0,0.45)] lg:backdrop-blur-xl">
-                <h1 className="font-display text-3xl font-black uppercase italic tracking-tight text-white lg:text-4xl">
+              <div className="rounded-sm border border-border bg-surface p-4 text-sm text-muted lg:sticky lg:top-24 lg:rounded-3xl lg:border-border lg:bg-surface lg:p-8 lg:shadow-[0_30px_80px_rgba(15,20,24,0.12)]">
+                <h1 className="font-display text-3xl font-semibold tracking-tight text-text lg:text-4xl">
                   Account
                 </h1>
                 {user ? (
                   <div className="mt-6 space-y-2">
-                    <p className="text-xs font-bold uppercase tracking-widest text-neutral-400 lg:text-sm">
+                    <p className="text-xs font-semibold uppercase tracking-widest text-muted lg:text-sm">
                       Profile
                     </p>
-                    <p className="text-white lg:text-lg">{user.name}</p>
-                    <p className="text-neutral-400">{user.emailOrPhone}</p>
+                    <p className="text-text lg:text-lg">{user.name}</p>
+                    <p className="text-muted">{user.emailOrPhone}</p>
                     <button
                       type="button"
                       onClick={logout}
-                      className="mt-4 text-xs font-bold uppercase tracking-widest text-street-red hover:underline lg:text-sm"
+                      className="mt-4 text-xs font-semibold uppercase tracking-widest text-accent hover:text-accent-hover lg:text-sm"
                     >
                       Logout
                     </button>
@@ -67,15 +67,15 @@ export function AccountScreen() {
                 ) : null}
               </div>
               <div className="pb-12">
-                <h2 className="mb-4 font-display text-2xl font-black uppercase italic tracking-tighter text-white lg:text-3xl">
+                <h2 className="mb-4 font-display text-2xl font-semibold tracking-tight text-text lg:text-3xl">
                   My Orders
                 </h2>
                 {isLoading ? (
-                  <div className="rounded-sm border border-neutral-800 bg-neutral-900 p-6 text-center text-sm text-neutral-400 lg:rounded-3xl lg:border-white/10 lg:bg-neutral-900/70 lg:px-10 lg:py-16 lg:text-base">
+                  <div className="rounded-sm border border-border bg-surface p-6 text-center text-sm text-muted lg:rounded-3xl lg:border-border lg:bg-surface lg:px-10 lg:py-16 lg:text-base">
                     Loading orders...
                   </div>
                 ) : orders.length === 0 ? (
-                  <div className="rounded-sm border border-neutral-800 bg-neutral-900 p-6 text-center text-sm text-neutral-400 lg:rounded-3xl lg:border-white/10 lg:bg-neutral-900/70 lg:px-10 lg:py-16 lg:text-base">
+                  <div className="rounded-sm border border-border bg-surface p-6 text-center text-sm text-muted lg:rounded-3xl lg:border-border lg:bg-surface lg:px-10 lg:py-16 lg:text-base">
                     No orders yet. Start shopping to build your rotation.
                   </div>
                 ) : (
@@ -90,7 +90,7 @@ export function AccountScreen() {
           </section>
         </main>
         <BottomNav />
-        <div className="h-10 bg-background-dark lg:hidden" />
+        <div className="h-10 bg-background lg:hidden" />
       </MobileShell>
     </RequireAuth>
   );

@@ -23,7 +23,7 @@ export function CollectionScreen({ title, products }: CollectionScreenProps) {
       <TopAppBar cartCount={count} onCartClick={() => router.push("/cart")} />
       <main className="flex-1 px-4 pb-24">
         <section className="py-6">
-          <h1 className="font-display text-3xl font-black uppercase italic tracking-tight text-white">
+          <h1 className="font-display text-3xl font-semibold tracking-tight text-text">
             {title}
           </h1>
           <div className="mt-6 grid gap-4">
@@ -34,7 +34,7 @@ export function CollectionScreen({ title, products }: CollectionScreenProps) {
         </section>
       </main>
       <BottomNav />
-      <div className="h-10 bg-background-dark" />
+      <div className="h-10 bg-background" />
     </MobileShell>
   );
 }
