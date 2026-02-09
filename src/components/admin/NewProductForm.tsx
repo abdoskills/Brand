@@ -4,7 +4,6 @@ import { ChangeEvent, FormEvent, useMemo, useState, useTransition } from "react"
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
-import { UploadDropzone } from "@/lib/uploadthing";
 import { slugify } from "@/lib/slug";
 import type { Product } from "@/types";
 
@@ -75,6 +74,7 @@ export function NewProductForm({ onCreate }: NewProductFormProps) {
   const router = useRouter();
   const [formValues, setFormValues] = useState<FormState>(INITIAL_STATE);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isUploadingImages, setIsUploadingImages] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -92,6 +92,58 @@ export function NewProductForm({ onCreate }: NewProductFormProps) {
       .split(/\n|,/)
       .map((item) => item.trim())
       .filter(Boolean);
+  }
+
+  async function handleImageUpload(event: ChangeEvent<HTMLInputElement>) {
+    const selected = Array.from(event.target.files ?? []);
+    if (!selected.length) return;
+
+    const remaining = MAX_PRODUCT_IMAGES - formValues.images.length;
+    if (remaining <= 0) {
+      alert(`You can upload up to ${MAX_PRODUCT_IMAGES} images.`);
+      event.target.value = "";
+      return;
+    }
+
+    const files = selected.slice(0, remaining);
+    if (selected.length > remaining) {
+      alert(`You can upload only ${remaining} more ${remaining === 1 ? "image" : "images"}.`);
+    }
+
+    setIsUploadingImages(true);
+    try {
+      const formData = new FormData();
+      files.forEach((file) => formData.append("file", file));
+
+      const res = await fetch("/api/cloudinary/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || "Upload failed");
+      }
+
+      const data = (await res.json()) as { files?: { url: string }[] };
+      const urls = data.files?.map((file) => file.url).filter(Boolean) ?? [];
+
+      if (!urls.length) {
+        throw new Error("Upload failed");
+      }
+
+      setFormValues((prev) => ({
+        ...prev,
+        images: [...prev.images, ...urls],
+      }));
+    } catch (uploadError) {
+      const message = uploadError instanceof Error ? uploadError.message : "Upload failed";
+      console.error("[cloudinary] client error", uploadError);
+      alert(`ERROR! ${message}`);
+    } finally {
+      setIsUploadingImages(false);
+      event.target.value = "";
+    }
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -357,48 +409,18 @@ export function NewProductForm({ onCreate }: NewProductFormProps) {
           <div className="md:col-span-2 space-y-2">
             <label className="text-sm font-medium text-text">Detailed Images</label>
             <div className="rounded-2xl border border-dashed border-border bg-background p-6 text-center">
-              <UploadDropzone
-                endpoint="productImage"
-                onBeforeUploadBegin={(files) => {
-                  const remaining = MAX_PRODUCT_IMAGES - formValues.images.length;
-                  if (remaining <= 0) {
-                    alert(`You can upload up to ${MAX_PRODUCT_IMAGES} images.`);
-                    return [];
-                  }
-                  if (files.length > remaining) {
-                    alert(`You can upload only ${remaining} more ${remaining === 1 ? "image" : "images"}.`);
-                    return files.slice(0, remaining);
-                  }
-                  return files;
-                }}
-                onClientUploadComplete={(res) => {
-                  if (res) {
-                    const urls = res.map((file) => file.url);
-                    setFormValues((prev) => ({
-                      ...prev,
-                      images: [...prev.images, ...urls],
-                    }));
-                  }
-                }}
-                onUploadError={(error: Error) => {
-                  const { data, cause, message } = error as Error & { data?: unknown; cause?: unknown };
-                  const safeMessage = message && message.trim() ? message : "Upload failed";
-                  console.error("[uploadthing] client error", {
-                    message: safeMessage,
-                    data,
-                    cause,
-                    raw: error,
-                  });
-                  const details = data ?? cause ?? null;
-                  const detailsText = details ? `\n${JSON.stringify(details)}` : "";
-                  alert(`ERROR! ${safeMessage}${detailsText}`);
-                }}
-                appearance={{
-                  button: "bg-accent text-white",
-                  container: "border-0",
-                  label: "text-muted hover:text-accent",
-                }}
-              />
+              <label className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-accent px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-white transition hover:bg-accent-hover">
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleImageUpload}
+                  disabled={isUploadingImages}
+                  className="hidden"
+                />
+                {isUploadingImages ? "Uploading..." : "Select images"}
+              </label>
+              <p className="mt-3 text-xs text-muted">Upload up to {MAX_PRODUCT_IMAGES} images.</p>
             </div>
             
             {formValues.images.length > 0 && (

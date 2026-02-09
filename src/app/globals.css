@@ -16,9 +16,6 @@ body {
   min-height: 100dvh;
 }
 
-main {
-  @apply flex w-full justify-center;
-}
 
 .material-symbols-outlined {
   font-family: var(--font-icons);

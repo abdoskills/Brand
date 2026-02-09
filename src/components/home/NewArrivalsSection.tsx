@@ -9,14 +9,14 @@ export function NewArrivalsSection({ products }: NewArrivalsSectionProps) {
   const visible = products.slice(0, 8);
   return (
     <section className="w-full bg-background py-16" id="shop">
-      <div className="mx-auto flex max-w-7xl flex-col gap-10 px-6 lg:px-12">
+      <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-10 px-6">
         <div className="flex flex-col gap-2">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">Latest Drops</p>
           <h2 className="font-display text-3xl sm:text-4xl text-text">New Arrivals</h2>
         </div>
 
         {visible.length ? (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="grid items-start justify-start gap-x-8 gap-y-12 grid-cols-[repeat(auto-fit,minmax(220px,280px))]">
             {visible.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}

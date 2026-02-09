@@ -10,7 +10,7 @@ export function HomeHero() {
   const easing: [number, number, number, number] = [0.25, 0.1, 0.25, 1];
 
   return (
-    <header className="relative isolate flex min-h-screen items-center justify-center overflow-hidden bg-background px-6 py-20 text-text">
+    <header className="relative isolate flex min-h-[calc(100vh-80px)] items-center justify-center overflow-hidden bg-background px-6 pb-20 pt-28 text-text lg:pt-32">
       <div className="pointer-events-none absolute inset-0 -z-20 flex items-center justify-center">
         <span className="subtle-text-stroke-title text-[clamp(6rem,18vw,14rem)] font-display tracking-[0.18em] opacity-70 blur-[0.2px]">
           FIT IN
@@ -41,7 +41,7 @@ export function HomeHero() {
       <div className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-background/92 via-background/85 to-background/70" />
 
       <motion.div
-        className="relative mx-auto mt-6 flex w-full max-w-5xl flex-col items-center gap-6 text-center sm:mt-10 lg:mt-12"
+        className="relative mx-auto mt-6 flex w-full max-w-3xl flex-col items-center gap-6 text-center sm:mt-10 lg:mt-12"
         initial="hidden"
         animate="show"
         variants={{

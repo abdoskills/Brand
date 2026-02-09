@@ -35,7 +35,7 @@ export default function RootLayout({
           <div className="min-h-screen flex flex-col">
             <Toaster position="top-center" />
             <Navbar cartBadge={<CartBadge />} />
-            <main className="flex-1">{children}</main>
+            <main className="flex-1 w-full flex flex-col">{children}</main>
             <Footer />
           </div>
         </AppProviders>

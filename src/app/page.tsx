@@ -17,7 +17,7 @@ export default async function HomePage() {
       </main>
 
       <section className="w-full bg-surface py-20 border-t border-border">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        <div className="mx-auto w-full max-w-[1280px] px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
               <h3 className="font-display text-3xl text-text">The Golden Standard</h3>

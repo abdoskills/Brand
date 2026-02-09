@@ -45,7 +45,7 @@ export default function Navbar({ cartBadge }: { cartBadge: ReactNode }) {
           : "glass-nav bg-background/50 border-b border-transparent"
       }`}
     >
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-[1280px] px-6">
         <div className="flex h-20 items-center justify-between">
           <div className="flex min-w-[120px] items-center gap-3 md:min-w-[160px]">
             <button
