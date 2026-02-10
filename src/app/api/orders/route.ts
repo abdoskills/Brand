@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
     const allowedSizes = new Set(["XS", "S", "M", "L", "XL"]);
     const productIds = items.map((item: { productId: string }) => item.productId);
 
-    const products = await prisma.product.findMany({ where: { id: { in: productIds } } });
+    const products = await prisma.product.findMany({ where: { id: { in: productIds }, isActive: true } });
     if (!products.length) {
       return NextResponse.json({ message: "Products not found" }, { status: 404 });
     }

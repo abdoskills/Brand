@@ -136,7 +136,7 @@ export async function createOrderFromItems(items: OrderItemInput[], shipping: Sh
 }
 
 export async function createTestOrder(productId: string, userId?: string | null) {
-  const product = await prisma.product.findUnique({ where: { id: productId } });
+  const product = await prisma.product.findFirst({ where: { id: productId, isActive: true } });
   if (!product) {
     return null;
   }

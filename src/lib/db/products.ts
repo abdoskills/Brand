@@ -43,6 +43,15 @@ export async function getAllProducts(filters?: { category?: Product["category"];
   return products.map(serializeProduct);
 }
 
+export async function getAdminProducts(options?: { showArchived?: boolean }) {
+  noStore();
+  const products = await prisma.product.findMany({
+    where: options?.showArchived ? { isActive: false } : { isActive: true },
+    orderBy: { createdAt: "desc" },
+  });
+  return products.map(serializeProduct);
+}
+
 export async function getProductBySlug(slug: string) {
   noStore();
   const normalized = slugify(slug);

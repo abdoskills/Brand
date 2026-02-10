@@ -24,9 +24,9 @@ export async function createBuyNowDraft(productId: string, size: string, qty: nu
   const userId = await getSessionUserId();
   const guestId = userId ? null : await getOrCreateGuestId(true);
 
-  const product = await prisma.product.findUnique({ where: { id: productId } });
+  const product = await prisma.product.findFirst({ where: { id: productId, isActive: true } });
   if (!product) {
-    throw new Error("Product not found");
+    throw new Error("Product not available");
   }
 
   const existingDraft = await prisma.checkoutDraft.findFirst({

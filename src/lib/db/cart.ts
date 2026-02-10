@@ -66,9 +66,9 @@ export async function addToCart(productId: string, size: string, qty: number) {
   }
   const safeQty = Math.max(1, Number(qty) || 1);
   const { userId, guestId } = await resolveCartOwner(true);
-  const product = await prisma.product.findUnique({ where: { id: productId } });
+  const product = await prisma.product.findFirst({ where: { id: productId, isActive: true } });
   if (!product) {
-    throw new Error("Product not found");
+    throw new Error("Product not available");
   }
 
   const cart = await prisma.cart.upsert({

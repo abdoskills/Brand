@@ -7,7 +7,7 @@ import { slugify } from "@/lib/slug";
 
 export async function GET() {
   try {
-    const products = await prisma.product.findMany({ orderBy: { createdAt: "desc" } });
+    const products = await prisma.product.findMany({ where: { isActive: true }, orderBy: { createdAt: "desc" } });
     return NextResponse.json({ products: products.map(serializeProduct) });
   } catch (error) {
     console.error("Products GET error", error);

@@ -1,6 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 
+import ProductGallery from "@/components/product/ProductGallery";
 import { PurchasePanel } from "@/components/product/PurchasePanel";
 import { TestOrderButton } from "@/components/product/TestOrderButton";
 import { ProductCard } from "@/components/ui/ProductCard";
@@ -113,34 +113,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         <div className="mx-auto max-w-7xl px-6 py-14 lg:px-12 lg:py-16">
           <div className="grid gap-12 lg:grid-cols-[1.05fr,0.95fr]">
             <div className="space-y-4">
-              <div className="relative aspect-[3/4] overflow-hidden rounded-3xl border border-border bg-surface shadow-[0_24px_70px_rgba(30,107,133,0.12)]">
-                <Image
-                  src={product.images[0]}
-                  alt={product.name}
-                  fill
-                  sizes="(min-width: 1024px) 48vw, 90vw"
-                  className="object-cover"
-                  priority
-                />
-              </div>
-              {product.images.length > 1 ? (
-                <div className="grid grid-cols-4 gap-3 sm:gap-4">
-                  {product.images.slice(0, 4).map((image, index) => (
-                    <div
-                      key={image}
-                      className="relative aspect-square overflow-hidden rounded-2xl border border-border bg-surface"
-                    >
-                      <Image
-                        src={image}
-                        alt={`${product.name} detail ${index + 1}`}
-                        fill
-                        sizes="160px"
-                        className="object-cover"
-                      />
-                    </div>
-                  ))}
-                </div>
-              ) : null}
+              <ProductGallery images={product.images ?? []} alt={product.name} />
             </div>
 
             <div className="flex flex-col gap-6">

@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { getAuthCookieName, verifyAuthToken } from "@/lib/auth";
 
-export const ALLOW_ADMIN_FOR_TEST = true;
+export const ALLOW_ADMIN_FOR_TEST = false;
 
 export async function enforceAdminAccess() {
   if (ALLOW_ADMIN_FOR_TEST) {
